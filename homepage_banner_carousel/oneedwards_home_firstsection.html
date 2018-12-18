@@ -1,0 +1,210 @@
+<div class="container-fluid p-5 edwards-banner-section edwards-mobile-hide">
+        <div class="row">
+          <div class="col">
+              <a href="" target="_blank" class="banner banner-img0">
+                  <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                  </div>
+              </a>
+          </div>
+          <div class="col">
+            <div class="row margin-bottom20">
+                <div class="col">
+                    <a href="" target="_blank" class="banner banner2 banner-img1">
+                        <div class="headings">
+                              <div class="type"></div>
+                              <h3></h3>
+                              <span> </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="" target="_blank" class="banner banner2 banner-img2">
+                        <div class="headings">
+                              <div class="type"></div>
+                              <h3></h3>
+                              <span> </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="" target="_blank" class="banner banner2 banner-img3">
+                        <div class="headings">
+                              <div class="type"></div>
+                              <h3></h3>
+                              <span> </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="" target="_blank" class="banner banner2 banner-img4">
+                        <div class="headings">
+                              <div class="type"></div>
+                              <h3></h3>
+                              <span> </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+          </div>
+      </div>
+</div>
+	
+<div class="container-fluid edwards-banner-section edwards-mobile-show edwards-mbl-carousel">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <a href="" target="_blank" class="carousel-item active">
+                <img class="d-block w-100" src="images/banner01.jpg" alt="First slide">
+                <div class="heading-section">
+                    <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                    </div>
+                </div>
+              </a>
+              <a href="" target="_blank" class="carousel-item">
+                <img class="d-block w-100" src="images/banner01.jpg" alt="Second slide">
+                <div class="heading-section">
+                    <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                    </div>
+                </div>
+              </a>
+              <a href="" target="_blank" class="carousel-item">
+                <img class="d-block w-100" src="images/banner01.jpg" alt="Third slide">
+                <div class="heading-section">
+                    <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                    </div>
+                </div>
+              </a>
+			  <a href="" target="_blank" class="carousel-item">
+                <img class="d-block w-100" src="images/banner01.jpg" alt="Fourth slide">
+                <div class="heading-section">
+                    <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                    </div>
+                </div>
+              </a>
+			  <a href="" target="_blank" class="carousel-item">
+                <img class="d-block w-100" src="images/banner01.jpg" alt="Fifth slide">
+                <div class="heading-section">
+                    <div class="headings">
+                        <div class="type"></div>
+                        <h3></h3>
+                        <span> </span>
+                    </div>
+                </div>
+              </a>
+            </div>
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+				<li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+				<li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+            </ol>
+        </div>
+    </div>
+
+
+<script type="text/javascript">	
+	/*===  variables ===*/
+	var clientContext;
+	var oList;
+	var responseMsg = '';
+	/*===  variables ===*/
+	
+	/*===  get list items () called from here ===*/
+	window.onload = function() {
+		for(var i=0; i<5; i++){
+			$('.banner-img' + i).css('background-image', 'none');
+		}
+		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+			debugger;
+			getHomePageBannerItems();
+		});
+		//not working when page published
+		//ExecuteOrDelayUntilScriptLoaded(getHomePageBannerItems, "sp.js");
+	};
+	/*===  get list items called from here ===*/
+	
+	
+	/*===  helper functions ===*/
+	
+	function onQueryFailed(sender, args) {
+		var customMsg = this.errorMsg? this.errorMsg : '';
+		alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+	}
+	/*===  helper functions ===*/
+	
+	function getHomePageBannerItems() {
+	    clientContext = new SP.ClientContext();
+		oList = clientContext.get_web().get_lists().getByTitle('Pages');
+		var camlQuery = new SP.CamlQuery();
+		var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='CarouselActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='CarouselOrder' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+		camlQuery.set_viewXml(q);
+		this.collListItem = oList.getItems(camlQuery);
+		//if we don't use 'include' all fields are returned.
+		//Since we also need every page's url, we need to get built-in 'EncodedAbsUrl' field which works only if we include it.
+		//For that, we had to include all the other fields too.
+		clientContext.load(collListItem, "Include(ID, CarouselActive, CarouselTitle, CarouselDescription, TaxKeyword, CarouselImage, CarouselOrder, EncodedAbsUrl)");
+		this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+		clientContext.executeQueryAsync(Function.createDelegate(this, this.onHomePageBannerItemsQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));        
+	}
+	
+	function onHomePageBannerItemsQuerySucceeded(sender, args) {
+		var listItemInfo = [];
+		var listItemEnumerator = collListItem.getEnumerator();	
+		while (listItemEnumerator.moveNext()) {
+			var oListItem = listItemEnumerator.get_current();
+			var item = {
+				id: oListItem.get_item('ID'),
+				carouselActive: oListItem.get_item('CarouselActive'),
+				carouselTitle: oListItem.get_item('CarouselTitle'),
+				carouselDescription: oListItem.get_item('CarouselDescription'),
+				taxKeyword: oListItem.get_item('TaxKeyword'),
+				carouselImage: oListItem.get_item('CarouselImage'),
+				carouselOrder: oListItem.get_item('CarouselOrder'),
+				pageUrl: oListItem.get_item('EncodedAbsUrl')
+				};
+			listItemInfo.push(item);
+		}
+		for (var i = 0; i < listItemInfo.length; i++) {
+			var item = listItemInfo[i];
+			if(item.carouselImage)
+				$('.banner-img' + i).css('background-image', 'url(' + item.carouselImage.$1_1 + ')');
+			$('.banner-img' + i + ' h3').text(item.carouselTitle);
+			$('.banner-img' + i + ' span').text(item.carouselDescription);
+			if(item.taxKeyword._Child_Items_.length)
+				$('.banner-img' + i + ' div.type').text(item.taxKeyword._Child_Items_[0].Label);
+			$('.banner-img' + i).attr("href", item.pageUrl);	
+		}
+		
+		
+		/*load data into carousel(it appears in mobile devices only)*/ 
+		$('.carousel-item').each(function(i, obj) {
+			if(listItemInfo[i]){
+				if(listItemInfo[i].carouselImage)
+					$(this).children("img:first").attr('src', listItemInfo[i].carouselImage.$1_1);
+				$(this).find("h3:first").text(listItemInfo[i].carouselTitle);
+				$(this).find("span:first").text(listItemInfo[i].carouselDescription);
+				if(listItemInfo[i].taxKeyword._Child_Items_.length)
+					$(this).find("div.type:first").text(listItemInfo[i].taxKeyword._Child_Items_[0].Label);
+				$(this).attr("href", listItemInfo[i].pageUrl);
+			}
+		});
+	}
+	
+</script>

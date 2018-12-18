@@ -1,0 +1,227 @@
+<div class="container-fluid p-5 edwards-updates-section edwards-headings">
+        <div class="row">
+            <div class="col">
+                <a href="/sites/OEBrand/Lists/News/AllItems.aspx" target="_blank" class="clickable-anchor">view all</a>
+            </div>
+        </div>
+        <div class="row" id="news-section">
+            <div class="col-md-3">
+                <div class="my-region">
+                    <h4>my region</h4>
+                    <a href="#">SHOW ME</a>
+                    <span class="button" onclick="news.filter(0)">Top Stories<i class="fas fa-arrow-right"></i></span>
+                    <span class="button" onclick="news.filter(1)">Hot Topics<i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row edwards-card-img">
+                    <div class="col-md-4">
+                        <img src="~/images/img01.jpg">
+                        <div class="type"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <a class="cards-heading"></a>
+                        <span>-</span>
+                    </div>
+                </div>
+				
+                <div class="row edwards-card-img">
+                    <div class="col-md-4">
+                        <img src="images/img01.jpg">
+                        <div class="type"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <a class="cards-heading"></a>
+                        <span>-</span>
+                    </div>
+                </div>
+                <div class="row edwards-card-img">
+                    <div class="col-md-4">
+                        <img src="images/img01.jpg">
+                        <div class="type"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <a class="cards-heading"></a>
+                        <span>-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="detail-sec">
+                    <a class="cards-heading"></a>
+                    <span></span>
+                    <span class="date"></span>
+                </div>
+                <div class="detail-sec">
+                    <a class="cards-heading"> </a>
+                    <span></span>
+                    <span class="date"></span>
+                </div>
+                <div class="detail-sec">
+                    <a class="cards-heading"> </a>
+                    <span></span>
+                    <span class="date"> </span>
+                </div>
+				<div class="detail-sec">
+                    <a class="cards-heading"> </a>
+                    <span></span>
+                    <span class="date"></span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+	
+	<script>
+	
+	/*===  variables ===*/
+	var news = {
+		clientContext: null,
+		oList: null,
+		editMode: false,
+		responseMsg: '',
+		imgItems: [3],
+		textItems: [4],
+		categories: ['top stories', 'hot topics']
+	};
+	/*===  variables ===*/	
+	
+	/*===  helper functions ===*/
+	news.onQueryFailed = function(sender, args) {
+		debugger;
+		var customMsg = this.errorMsg? this.errorMsg : '';
+		alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+	}
+	
+	/*===  visible = string('show'/'hide'), itemType = 'image'/'text', item = $(this) ===*/
+	news.manageVisibility = function(visible, itemType, item){
+		switch(itemType){
+			case 'text':
+				if(visible == 'show')
+					item.css("display", "block");
+				else
+					item.css("display", "none");
+				break;
+				
+			case 'image':
+				if(visible == 'show')
+					item.css("display", "flex");
+				else
+					item.css("display", "none");
+				break;
+		}
+	}
+	/*===  helper functions ===*/
+	$( document ).ready(function() {
+		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+				news.getItems();
+			});
+	});
+	
+	news.getItems = function(){
+	    news.clientContext = new SP.ClientContext();
+		news.oList = news.clientContext.get_web().get_lists().getByTitle('News');
+		var camlQuery = new SP.CamlQuery();
+		//IsActive = true, Order by 'Order asc'.
+		var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+		camlQuery.set_viewXml(q);
+		news.collListItem = news.oList.getItems(camlQuery);
+		news.clientContext.load(news.collListItem);
+		this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+		news.clientContext.executeQueryAsync(Function.createDelegate(this, news.onGetItemsQuerySucceeded), Function.createDelegate(this, news.onQueryFailed));        
+	}
+	
+	news.onGetItemsQuerySucceeded = function(sender, args) {
+		news.imgItems = [];
+		//news.imgItems.length = 3;
+		news.textItems = [];
+		//news.textItems.length = 4;
+		var listItemEnumerator = news.collListItem.getEnumerator();	
+		while (listItemEnumerator.moveNext()) {
+			var oListItem = listItemEnumerator.get_current();
+			var item = {
+				id: oListItem.get_item('ID'),
+				title: oListItem.get_item('Title'),
+				url: oListItem.get_item('Url'),
+				description: oListItem.get_item('Description'),
+				imageUrl: oListItem.get_item('ImageUrl'),
+				order: oListItem.get_item('Order0'),
+				category: oListItem.get_item('Category'),
+				tag: oListItem.get_item('Tag'),
+				articlePublishDate: oListItem.get_item('ArticlePublishDate')
+				};
+			if(item.imageUrl)
+				news.imgItems.push(item);
+			else
+				news.textItems.push(item);
+		}	
+		
+		news.populateImageNews(null);
+		news.populateTextNews(null);
+	}
+	
+	news.populateImageNews = function(category){
+		if(news.imgItems.length){
+			$('#news-section .edwards-card-img').each(function(i, obj) {	
+				if(news.imgItems[i]){
+					if(!category || (category && news.imgItems[i].category.length && news.imgItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
+						$(this).find('img:first').attr('src', news.imgItems[i].imageUrl.$1_1);
+						$(this).find('.type').text(news.imgItems[i].tag);
+						$(this).find('.cards-heading').text(news.imgItems[i].title).attr('href', news.imgItems[i].url.$1_1).attr("target","_blank");
+						$(this).find('.cards-heading + span').text(news.imgItems[i].description);
+						//data available for this div so we show it. 
+						news.manageVisibility('show', 'image', $(this));
+					}
+					else{
+						//data not available for this div so we hide it. 
+						news.manageVisibility('hide', 'image', $(this));
+					}
+				}
+				else{
+					//data not available for this div so we hide it. 
+					news.manageVisibility('hide', 'image', $(this));
+				}
+			});
+		}
+	}
+	
+	news.populateTextNews = function(category){
+		if(news.textItems.length){
+			$('#news-section .detail-sec').each(function(i, obj) {
+				if(news.textItems[i]){
+					if(!category || (category && news.textItems[i].category && news.textItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
+						$(this).find('.cards-heading').text(news.textItems[i].title).attr('href', news.textItems[i].url.$1_1).attr("target","_blank");
+						debugger;
+						$(this).find('span.date').text(news.textItems[i].articlePublishDate.toString().slice(4, 10));
+						if(!(news.textItems[i+1])){
+							$(this).css('border', 'none');
+						}
+						news.manageVisibility('show', 'text', $(this));
+					}
+					else
+						news.manageVisibility('hide', 'text', $(this));
+				}
+				else{
+					//$(this).css('border', 'none');
+					news.manageVisibility('hide', 'text', $(this));
+				}
+			});
+		}
+	}
+	
+	news.filter = function(index){
+		debugger;		
+		if(news.categories[index]){
+			var category = news.categories[index];
+			news.populateImageNews(category);
+			news.populateTextNews(category);
+		}
+	}
+	</script>
+
+	
+	
+	
+	
+	
+	
