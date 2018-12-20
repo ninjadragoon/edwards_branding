@@ -1,0 +1,188 @@
+<div class="container-fluid edwards-headings">
+    <div class="row">
+        <div class="col-md-6 p-5 edwards-channel-sec">
+            <h4>edwards channel</h4>
+            <div class="edwards-mobile-hide">
+                <div class="large-vedio-sec">
+                    <iframe class="large-video" ></iframe>
+                    <span class="large-vedio-desc">-</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <iframe class="small-video" ></iframe>
+                        <span class="vedio-desc">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <iframe class="small-video" ></iframe>
+                        <span class="vedio-desc">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <iframe class="small-video" ></iframe>
+                        <span class="vedio-desc">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container-fluid edwards-mobile-show edwards-mbl-carousel">
+                <div id="carouselExampleIndicators01" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                            <iframe class="large-video"></iframe>
+                            <span class="large-vedio-desc">-</span>
+                      </div>
+                      <div class="carousel-item">
+                            <iframe class="large-video"></iframe>
+                            <span class="large-vedio-desc">-</span>
+                      </div>
+                      <div class="carousel-item">
+                            <iframe class="large-video"></iframe>
+                            <span class="large-vedio-desc">-</span>
+                      </div>
+                      <div class="carousel-item">
+                            <iframe class="large-video"></iframe>
+                            <span class="large-vedio-desc">-</span>
+                      </div>
+                    </div>
+                    <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators01" data-slide-to="0" class="active"></li>
+                        <li data-target="#carouselExampleIndicators01" data-slide-to="1" class=""></li>
+                        <li data-target="#carouselExampleIndicators01" data-slide-to="2" class=""></li>
+                        <li data-target="#carouselExampleIndicators01" data-slide-to="3" class=""></li>
+                    </ol>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-md-6 p-5 edwards-resources-sec">
+            <h4>key resources</h4>
+            <div class="row margin-bottom">
+                <div class="col-6">
+                    <a href=""  class="banner banner2 banner-img1" style="background-image: url(/sites/OEBrand/_catalogs/masterpage/OneEdwards_v12/Edwards/images/benefits.jpg);">
+                        <div class="headings">
+                            <h3>Benefits &amp; <br> Wellness</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href=""  class="banner banner2 banner-img1" style="background-image: url(/sites/OEBrand/_catalogs/masterpage/OneEdwards_v12/Edwards/images/hr.jpg);">
+                        <div class="headings">
+                              <h3>My HR</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="row margin-bottom">
+                <div class="col-6">
+                    <a href="" class="banner banner2 banner-img1">
+                        <div class="headings">
+                              <h3>News Releases</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href=""  class="banner banner2 banner-img1" style="background-image: url(/sites/OEBrand/_catalogs/masterpage/OneEdwards_v12/Edwards/images/stats.png);">
+                        <div class="headings">
+                              <h3>Usage Stats</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <a href=""  class="banner banner2 banner-img1" style="background-image: url(/sites/OEBrand/_catalogs/masterpage/OneEdwards_v12/Edwards/images/travel_policy.png);">
+                        <div class="headings">
+                              <h3>Travel Policies</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href=""  class="banner banner2 banner-img1" style="background-image: url(/sites/OEBrand/_catalogs/masterpage/OneEdwards_v12/Edwards/images/it_support.jpg);">
+                        <div class="headings">
+                            <h3>IT Service <br> Request</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /*===  variables ===*/
+    var youtube = {
+		clientContext: null,
+		oList: null,
+		editMode: false,
+		responseMsg: '',
+		items: []
+	};
+	/*===  variables ===*/	
+
+    /*===  helper functions ===*/
+	youtube.onQueryFailed = function(sender, args) {
+		debugger;
+		var customMsg = this.errorMsg? this.errorMsg : '';
+		alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+	}
+    /*===  helper functions ===*/
+
+    $( document ).ready(function() {
+		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+                youtube.getItems();
+			});
+	});
+
+    youtube.getItems = function(){    
+        youtube.clientContext = new SP.ClientContext();
+        youtube.oList = youtube.clientContext.get_web().get_lists().getByTitle('Edwards Channel');
+		var camlQuery = new SP.CamlQuery();
+		//IsActive = true, Order by 'Order asc'.
+		var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+		camlQuery.set_viewXml(q);
+		youtube.collListItem = youtube.oList.getItems(camlQuery);
+		youtube.clientContext.load(youtube.collListItem);
+		this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+		youtube.clientContext.executeQueryAsync(Function.createDelegate(this, youtube.onGetItemsQuerySucceeded), Function.createDelegate(this, youtube.onQueryFailed));  
+    }
+
+    youtube.onGetItemsQuerySucceeded = function(sender, args) {
+		youtube.items = [];
+		var listItemEnumerator = youtube.collListItem.getEnumerator();	
+		while (listItemEnumerator.moveNext()) {
+			var oListItem = listItemEnumerator.get_current();
+			var item = {
+                    id: oListItem.get_item('ID'),
+                    title: oListItem.get_item('Title'),
+                    url: oListItem.get_item('Url'),
+                    order: oListItem.get_item('Order0')
+				};
+            youtube.items.push(item);
+		}	
+
+        if(youtube.items.length){
+            $('.edwards-channel-sec .edwards-mobile-hide .large-video').attr('src', youtube.items[0].url.$1_1);
+            $('.edwards-channel-sec .edwards-mobile-hide .large-vedio-desc').text(youtube.items[0].title);
+
+            $('.edwards-channel-sec .small-video').each(function(i, obj) {
+                if(youtube.items[i + 1]){
+                    $(this).attr('src', youtube.items[i+1].url.$1_1);
+                    $(this).siblings('.vedio-desc').text(youtube.items[i+1].title);
+
+                }
+            });
+
+            //all items go in the carousel.
+            $('.edwards-channel-sec .edwards-mbl-carousel .large-video').each(function(i, obj) {
+                if(youtube.items[i]){
+                    $(this).attr('src', youtube.items[i].url.$1_1);
+                    $(this).siblings('.large-vedio-desc').text(youtube.items[i].title);
+
+                }
+            });
+        }
+
+	}
+
+
+
+</script>
