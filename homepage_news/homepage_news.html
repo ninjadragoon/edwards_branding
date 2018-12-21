@@ -115,15 +115,15 @@
 	$( document ).ready(function() {
 		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
 				news.getItems();
-			});
+		});
 	});
 	
 	news.getItems = function(){
 	    news.clientContext = new SP.ClientContext();
 		news.oList = news.clientContext.get_web().get_lists().getByTitle('News');
 		var camlQuery = new SP.CamlQuery();
-		//IsActive = true, Order by 'Order asc'.
-		var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+		//where IsActive = 1 && (Category = 'top stories' || 'hot topics') order by Order0 asc
+		var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "<Or>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[0] + "</Value></Eq>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[1] + "</Value></Eq>" + "</Or>"  + " </And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
 		camlQuery.set_viewXml(q);
 		news.collListItem = news.oList.getItems(camlQuery);
 		news.clientContext.load(news.collListItem);
