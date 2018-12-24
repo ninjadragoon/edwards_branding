@@ -1,27 +1,15 @@
 <div class="news-headings clearfix">
-    <h4>edwards culture</h4>
+        <h4>edwards culture</h4>
 </div>
 <div id="e-culture" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item">
+     <div class="carousel-inner">
+        <!--<div class="carousel-item active">
         <img src="/sites/OEBrand/PublishingImages/page1.png">
         <div class="carousel-caption">
             <p>Title of the Award / Recognition</p>
         </div>   
-        </div>
-        <div class="carousel-item active">
-        <img src="/sites/OEBrand/PublishingImages/page1.png">
-        <div class="carousel-caption">
-            <p>Title of the Award / Recognition</p>
-        </div>   
-        </div>
-        <div class="carousel-item">
-        <img src="/sites/OEBrand/PublishingImages/page1.png">
-        <div class="carousel-caption">
-            <p>Title of the Award / Recognition</p>
-        </div>   
-        </div>
-    </div>
+        </div> --> 
+    </div> 
     <a class="carousel-control-prev" href="#e-culture" data-slide="prev">
         <span class="carousel-control-prev-icon"></span>
     </a>
@@ -29,6 +17,9 @@
         <span class="carousel-control-next-icon"></span>
     </a>
 </div>
+
+
+
 <div class="row edwards-card-img">
     <div class="col-4 img-sec">
         <img src="/sites/OEBrand/PublishingImages/page1.png">
@@ -43,3 +34,81 @@
         </div>
     </div>
 </div>
+
+
+
+<script>
+        /*===  variables ===*/
+        var culture = {
+            clientContext: null,
+            oList: null,
+            editMode: false,
+            responseMsg: '',
+            items: []
+        };
+        /*===  variables ===*/	
+        
+        /*===  helper functions ===*/
+        culture.onQueryFailed = function(sender, args) {
+            debugger;
+            var customMsg = this.errorMsg? this.errorMsg : '';
+            alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+        }
+        /*===  helper functions ===*/
+        
+        $( document ).ready(function() {
+            SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+                culture.getItems();
+            });
+        });
+    
+        culture.getItems = function(){
+            culture.clientContext = new SP.ClientContext();
+            culture.oList = culture.clientContext.get_web().get_lists().getByTitle('Edwards Culture');
+            var camlQuery = new SP.CamlQuery();
+            //where IsActive = 1 && (Category = 'employee news') limit 5 order by Order0 asc
+            var q = "<View><Query><Where><Eq><FieldRef Name='IsActive' /><Value Type='Boolean'>1</Value></Eq></Where><OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy></Query></View>";
+            camlQuery.set_viewXml(q);
+            culture.collListItem = culture.oList.getItems(camlQuery);
+            culture.clientContext.load(culture.collListItem);
+            this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+            culture.clientContext.executeQueryAsync(Function.createDelegate(this, culture.onGetItemsQuerySucceeded), Function.createDelegate(this, culture.onQueryFailed));        
+        }
+        
+        culture.onGetItemsQuerySucceeded = function(sender, args) {
+            var listItemEnumerator = culture.collListItem.getEnumerator();	
+            while (listItemEnumerator.moveNext()) {
+                var oListItem = listItemEnumerator.get_current();
+                var item = {
+                    id: oListItem.get_item('ID'),
+                    title: oListItem.get_item('Title'),
+                    order: oListItem.get_item('Order0'),
+                    imageUrl: oListItem.get_item('ImageUrl')
+                    };
+                    
+                    culture.items.push(item);
+            }	
+            
+            culture.renderItems();
+        }
+        
+        culture.renderItems = function(){
+            var html = '';
+            if(culture.items.length){
+                for(var i=0; i<culture.items.length; i++){
+                    var item = culture.items[i];
+                    html +=  '<div class="carousel-item' + (i == 0 ? " active": "") + '">\
+                                <img src="'+ item.imageUrl.$1_1 +'">\
+                                <div class="carousel-caption">\
+                                    <p>' + item.title + '</p>\
+                                </div>\
+                            </div>';
+                }
+                debugger;
+                $("#e-culture .carousel-inner").prepend(html);                
+            }
+        }
+    
+    
+    </script>
+    
