@@ -97,12 +97,7 @@
             if(culture.items.length){
                 for(var i=0; i<culture.items.length; i++){
                     var item = culture.items[i];
-                    html +=  '<div class="carousel-item' + (i == 0 ? " active": "") + '">\
-                                <img src="'+ item.imageUrl.$1_1 +'">\
-                                <div class="carousel-caption">\
-                                    <p>' + item.title + '</p>\
-                                </div>\
-                            </div>';
+                    html +=  '<div class="carousel-item' + (i == 0 ? " active": "") + '"> <img src="'+ item.imageUrl.$1_1 +'"> <div class="carousel-caption"> <p>' + item.title + '</p> </div></div>';
                 }
                 debugger;
                 $("#e-culture .carousel-inner").prepend(html);                
