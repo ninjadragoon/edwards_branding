@@ -129,7 +129,7 @@
 	/*===  get list items () called from here ===*/
 	window.onload = function() {
 		for(var i=0; i<5; i++){
-			$('.banner-img' + i).css('background-image', 'none');
+			$('.edwards-banner-section .banner-img' + i).css('background-image', 'none');
 		}
 		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
 			debugger;
@@ -184,17 +184,17 @@
 		for (var i = 0; i < listItemInfo.length; i++) {
 			var item = listItemInfo[i];
 			if(item.carouselImage)
-				$('.banner-img' + i).css('background-image', 'url(' + item.carouselImage.$1_1 + ')');
-			$('.banner-img' + i + ' h3').text(item.carouselTitle);
-			$('.banner-img' + i + ' span').text(item.carouselDescription);
+				$('.edwards-banner-section .banner-img' + i).css('background-image', 'url(' + item.carouselImage.$1_1 + ')');
+			$('.edwards-banner-section .banner-img' + i + ' h3').text(item.carouselTitle);
+			$('.edwards-banner-section .banner-img' + i + ' span').text(item.carouselDescription);
 			if(item.taxKeyword._Child_Items_.length)
-				$('.banner-img' + i + ' div.type').text(item.taxKeyword._Child_Items_[0].Label);
-			$('.banner-img' + i).attr("href", item.pageUrl);	
+				$('.edwards-banner-section .banner-img' + i + ' div.type').text(item.taxKeyword._Child_Items_[0].Label);
+			$('.edwards-banner-section .banner-img' + i).attr("href", item.pageUrl);	
 		}
 		
 		
 		/*load data into carousel(it appears in mobile devices only)*/ 
-		$('.carousel-item').each(function(i, obj) {
+		$('.edwards-banner-section .carousel-item').each(function(i, obj) {
 			if(listItemInfo[i]){
 				if(listItemInfo[i].carouselImage)
 					$(this).children("img:first").attr('src', listItemInfo[i].carouselImage.$1_1);
