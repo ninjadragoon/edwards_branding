@@ -1,3 +1,11 @@
 .my-region{
     min-height: 300px;
 }
+.oneedwards-body input[type=button], input[type=reset], input[type=submit], button {
+    min-width: auto;
+}
+
+.oneedwards-body input[type=button]:hover, input[type=reset]:hover, input[type=submit]:hover, button:hover{
+	border-color: transparent;
+    background-color: transparent;
+}

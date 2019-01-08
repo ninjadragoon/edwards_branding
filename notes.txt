@@ -1,0 +1,22 @@
+Sharepoint Lists and other assets involved in these components: 
+Lists:
+1. Edwards Channel 
+2. Edwards Culture
+3. Important Links
+4. News
+5. Pages
+(Migrate Apage1 - Apage5 for home page top banner)
+6. Regional Events
+
+Images:
+(All images from Images library)
+----------------------------------------------------------------
+
+Sharepoint Issues and Solutions: 
+
+1. master page converts external css link to style tag(and css stops working)
+solution: 
+Add css-conversion no attribute to link tag like below:
+type="text/css" rel="stylesheet" ms-design-css-conversion="no"
+
+-----------------------------------------------------------------
