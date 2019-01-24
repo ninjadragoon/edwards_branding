@@ -6,10 +6,17 @@ Lists:
 4. News
 5. Pages
 (Migrate Apage1 - Apage5 for home page top banner)
+columns: 
+a. CarouselActive
+b. CarouselDescription
+c. CarouselImage
+d. CarouselOrder
+e. CarouselTitle
+
 6. Regional Events
 
 Images:
-(All images from Images library)
+1. All images from Images library
 ----------------------------------------------------------------
 
 Sharepoint Issues and Solutions: 

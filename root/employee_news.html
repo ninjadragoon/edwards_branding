@@ -1,0 +1,99 @@
+<div class="employee-news-sec">
+    <h5 class="font-weight-bold text-dark edwards-brdr mb-4">Employee News</h5>
+        <a target="_blank" href="/Lists/News/AllItems.aspx#InplviewHashc44c6cb7-2ee9-472e-88fa-8865d706b5dd=FilterField1%3DCategory-FilterValue1%3DEmployee%2520News" class="text-primary position-absolute tr-0 mr-3 mt-2"><small>View all</small></a>
+        <ul class="list-group list-group-flush lst-with-brdr" Id="employee-news">
+      <li class="list-group-item detail-sec"><a href="#" class="font-weight-bold"><span class="cards-heading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br><small class="font-weight-bold pr-1 d-none">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+      <li class="list-group-item detail-sec"><a href="#" class="font-weight-bold"><span class="cards-heading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br><small class="font-weight-bold pr-1 d-none">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+      <li class="list-group-item detail-sec"><a href="#" class="font-weight-bold"><span class="cards-heading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br><small class="font-weight-bold pr-1 d-none">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+      <li class="list-group-item detail-sec"><a href="#" class="font-weight-bold"><span class="cards-heading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br><small class="font-weight-bold pr-1 d-none">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+    </ul>
+</div>
+<script>
+/*===  variables ===*/
+var empNews = {
+clientContext: null,
+oList: null,
+editMode: false,
+responseMsg: '',
+items: [],
+categories: ['employee news']
+};
+/*===  variables ===*/	
+
+/*===  helper functions ===*/
+empNews.onQueryFailed = function(sender, args) {
+debugger;
+var customMsg = this.errorMsg? this.errorMsg : '';
+alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+/*===  visible = string('show'/'hide'), itemType = 'image'/'text', item = $(this) ===*/
+empNews.manageVisibility = function(visible, item){
+if(visible == 'show')
+item.css("display", "block");
+else
+item.css("display", "none");				
+}
+/*===  helper functions ===*/
+
+$( document ).ready(function() {
+SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+empNews.getItems();
+});
+});
+
+empNews.getItems = function(){
+empNews.clientContext = new SP.ClientContext();
+empNews.oList = empNews.clientContext.get_web().get_lists().getByTitle('News');
+var camlQuery = new SP.CamlQuery();
+//where IsActive = 1 && (Category = 'employee news') limit 5 order by Order0 asc
+var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" +  "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + empNews.categories[0] + "</Value></Eq>"  + " </And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "<RowLimit>5</RowLimit></View>";
+camlQuery.set_viewXml(q);
+empNews.collListItem = empNews.oList.getItems(camlQuery);
+empNews.clientContext.load(empNews.collListItem);
+this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+empNews.clientContext.executeQueryAsync(Function.createDelegate(this, empNews.onGetItemsQuerySucceeded), Function.createDelegate(this, empNews.onQueryFailed));        
+}
+
+empNews.onGetItemsQuerySucceeded = function(sender, args) {
+var listItemEnumerator = empNews.collListItem.getEnumerator();	
+while (listItemEnumerator.moveNext()) {
+var oListItem = listItemEnumerator.get_current();
+var item = {
+id: oListItem.get_item('ID'),
+title: oListItem.get_item('Title'),
+url: oListItem.get_item('Url'),
+order: oListItem.get_item('Order0'),
+category: oListItem.get_item('Category'),
+articlePublishDate: oListItem.get_item('ArticlePublishDate')
+};
+
+empNews.items.push(item);
+}	
+
+empNews.renderItems();
+}
+
+empNews.renderItems = function(){
+if(empNews.items.length){
+$('#employee-news .detail-sec').each(function(i, obj) {
+if(empNews.items[i]){
+$(this).find('a').attr('href', empNews.items[i].url.$1_1).attr("target","_blank");
+$(this).find('.cards-heading').text(empNews.items[i].title);
+if(empNews.items[i].articlePublishDate)
+$(this).find('.date').text(empNews.items[i].articlePublishDate.toString().slice(4, 10));
+
+empNews.manageVisibility('show', $(this));
+}
+else
+empNews.manageVisibility('hide', $(this));
+
+if(!(empNews.items[i+1])){
+$(this).css('border', 'none');
+}
+});
+}
+}
+
+
+</script>

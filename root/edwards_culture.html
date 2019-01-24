@@ -1,0 +1,118 @@
+<div class="edwards-culture-sec"> 
+    <h5 class="font-weight-bold text-dark edwards-brdr mb-4">Edwards Culture<br/></h5> 
+    <div id="e-culture" class="cltr-carousel carousel slide mb-2" data-ride="carousel"> 
+       <div class="carousel-inner"> 
+          <div class="carousel-item banner active carousel-item-left" > 
+             <img src="" class="invisible" alt=""/> 
+             <div class="carousel-caption position-absolute bl-0 p-3 w-100 text-left text-dark"> 
+                <b>-</b> </div>
+          </div> 
+          <div class="carousel-item banner carousel-item-next carousel-item-left" > 
+             <img src="" class="invisible" alt=""/> 
+             <div class="carousel-caption position-absolute bl-0 p-3 w-100 text-left text-dark"> 
+                <b>-</b> </div>
+          </div> 
+          <div class="carousel-item banner"> 
+             <img src="" class="invisible" alt=""/> 
+             <div class="carousel-caption position-absolute bl-0 p-3 w-100 text-left text-dark"> 
+                <b>-</b> </div>
+          </div> 
+       </div> 
+       <a class="carousel-control-prev" href="#e-culture" data-slide="prev"> 
+          <i class="fas fa-chevron-left"></i> </a> 
+       <a class="carousel-control-next" href="#e-culture" data-slide="next"> 
+          <i class="fas fa-chevron-right"></i> </a> </div> 
+   
+    <div class="edwards-market-sec d-none d-lg-block"> 
+       <div class="edwrds-stk-mrkt media"> 
+          <div class="banner mr-3 mr-lg-4" style="background-image: url(&quot;images/img01.jpg&quot;);">&#160;</div> 
+          <div class="media-body align-self-center"> 
+             <h6 class="text-white mb-0 font-weight-light">Edwards Lifesciences (EW)</h6> 
+             <h4 class="text-white">
+                <span>12.45</span><small class="px-4"><i class="fas fa-chevron-down"></i></small><span>-4.42</span></h4> 
+             <div class="text-dark"> 
+                <a href="#" class="small text-dark">News</a> 
+                <small> | </small> 
+                <a href="#" class="small text-dark">Market</a> 
+                <small> | </small> 
+                <a href="#" class="small text-dark">Chart</a> ​<br/></div> 
+          </div> 
+       </div> 
+    </div> 
+ </div>
+ <script>
+         /*===  variables ===*/
+         var culture = {
+             clientContext: null,
+             oList: null,
+             editMode: false,
+             responseMsg: '',
+             items: []
+         };
+         /*===  variables ===*/	
+         
+         /*===  helper functions ===*/
+         culture.onQueryFailed = function(sender, args) {
+             debugger;
+             var customMsg = this.errorMsg? this.errorMsg : '';
+             alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+         }
+         /*===  helper functions ===*/
+         
+         $( document ).ready(function() {
+             SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+                 culture.getItems();
+             });
+         });
+     
+         culture.getItems = function(){
+             culture.clientContext = new SP.ClientContext();
+             culture.oList = culture.clientContext.get_web().get_lists().getByTitle('Edwards Culture');
+             var camlQuery = new SP.CamlQuery();
+             //where IsActive = 1 && (Category = 'employee news') limit 5 order by Order0 asc
+             var q = "<View><Query><Where><Eq><FieldRef Name='IsActive' /><Value Type='Boolean'>1</Value></Eq></Where><OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy></Query></View>";
+             camlQuery.set_viewXml(q);
+             culture.collListItem = culture.oList.getItems(camlQuery);
+             culture.clientContext.load(culture.collListItem);
+             this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+             culture.clientContext.executeQueryAsync(Function.createDelegate(this, culture.onGetItemsQuerySucceeded), Function.createDelegate(this, culture.onQueryFailed));        
+         }
+         
+         culture.onGetItemsQuerySucceeded = function(sender, args) {
+             var listItemEnumerator = culture.collListItem.getEnumerator();	
+             while (listItemEnumerator.moveNext()) {
+                 var oListItem = listItemEnumerator.get_current();
+                 var item = {
+                     id: oListItem.get_item('ID'),
+                     title: oListItem.get_item('Title'),
+                     order: oListItem.get_item('Order0'),
+                     imageUrl: oListItem.get_item('ImageUrl')
+                     };
+                     
+                     culture.items.push(item);
+             }	
+             
+             culture.renderItems();
+         }
+         
+         culture.renderItems = function(){
+             var html = '';
+             if(culture.items.length){
+                 for(var i=0; i<culture.items.length; i++){
+                     var item = culture.items[i];
+                     
+                     html+='<div class="carousel-item banner ' + (i == 0 ? " active": "") + '" style="background-image: url('+ item.imageUrl.$1_1 +')">';
+                     html+='<img src="images/banner01.jpg" class="invisible" alt="">';
+                     html+='<div class="carousel-caption position-absolute bl-0 p-3 w-100 text-left text-dark">';
+                     html+='<b>' + item.title + '</b>';
+                     html+='</div>';
+                     html+='</div>';
+                 }
+                 $("#e-culture .carousel-inner").empty();
+                 $("#e-culture .carousel-inner").append(html);                
+             }
+         }
+     
+     
+     </script>
+     

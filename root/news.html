@@ -1,0 +1,209 @@
+<div class="edwards-updates-section row p-0 p-lg-5" >
+    <div class="col p-lg-0">
+        <div class="text-right mb-lg-3">
+         <a href="#" class=" text-primary d-none d-lg-inline "><small>View all</small></a>
+        </div>
+        <div class="row">
+         <div class="col-lg-4 mb-3 mb-lg-0 px-0 px-lg-3">
+             <div class="my-region h-100 p-3 py-4 p-lg-4 position-relative">
+                 <h4 class="text-uppercase font-weight-bold ls-1 text-white edwards-brdr no-gry mb-3">my region</h4>
+                 <a href="#" class="text-primary d-inline d-lg-none position-absolute tr-0 mr-3 mt-3"><small>View all</small></a>
+                 <a href="#" class="text-uppercase text-white ls-1 x-small d-none d-lg-inline"><span>Show me</span></a>
+                 <ul class="list-group list-group-flush flsh-lst-itm rgn-list flex-lg-column flex-row">
+                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="active h5">Top Stories<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
+                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="h5" >Hot Topics<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
+                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="h5">Events<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
+                 </ul>
+             </div>
+         </div>
+         <div class="col-lg-5 mb-3 mb-lg-0" Id="news-section">
+             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
+                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
+                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
+                  </div>
+               <div class="media-body align-self-center text-dark">
+                 <p class="mb-2 font-weight-bold cheading">Edwards" First day of business in ireland</p>
+                 <p class="mb-0 cdesc">Short description of news article. 2 lines for details.</p>
+               </div>
+             </a>
+             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
+                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
+                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
+                  </div>
+               <div class="media-body align-self-center text-dark">
+                 <p class="mb-2 font-weight-bold cheading">New Removable Storage Media Policy</p>
+                 <p class="mb-0 cdesc">Short description of news article. 2 lines for details.</p>
+               </div>
+             </a>
+             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
+                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
+                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
+                  </div>
+               <div class="media-body align-self-center text-dark">
+                 <p class="mb-2 font-weight-bold cheading">July 27 Employee Meeting Now Online</p>
+                 <p class="mb-0 cdesc">pShort description of news article. 2 lines for details.p</p>
+               </div>
+             </a>
+         </div>
+         <div class="col-lg-3 mb-3 mb-lg-0" Id="detail-sec">
+             <ul class="list-group list-group-flush lst-with-brdr">
+               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Roy Zhu Hairong joins Edwards as Assoc. Mgr., Treasury</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Beth Rose Promoted to Sr Dr., Stregy & Business Development, CC & Vascular</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Sally Tran Joins TmTT/AT Finance as Financial Analyst</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
+             </ul>
+         </div>
+        </div>
+ </div>
+</div>
+
+
+<script>
+
+/*===  variables ===*/
+var news = {
+clientContext: null,
+oList: null,
+editMode: false,
+responseMsg: '',
+imgItems: [3],
+textItems: [4],
+categories: ['top stories', 'hot topics']
+};
+/*===  variables ===*/	
+
+/*===  helper functions ===*/
+news.onQueryFailed = function(sender, args) {
+debugger;
+var customMsg = this.errorMsg? this.errorMsg : '';
+alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+/*===  visible = string('show'/'hide'), itemType = 'image'/'text', item = $(this) ===*/
+news.manageVisibility = function(visible, itemType, item){
+switch(itemType){
+case 'text':
+ if(visible == 'show')
+     item.css("display", "block");
+ else
+     item.css("display", "none");
+ break;
+ 
+case 'image':
+ if(visible == 'show')
+     item.css("display", "flex");
+ else
+     item.css("display", "none");
+ break;
+}
+}
+/*===  helper functions ===*/
+$( document ).ready(function() {
+SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+ news.getItems();
+});
+});
+
+news.getItems = function(){
+news.clientContext = new SP.ClientContext();
+news.oList = news.clientContext.get_web().get_lists().getByTitle('News');
+var camlQuery = new SP.CamlQuery();
+//where IsActive = 1 && (Category = 'top stories' || 'hot topics') order by Order0 asc
+var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "<Or>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[0] + "</Value></Eq>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[1] + "</Value></Eq>" + "</Or>"  + " </And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+camlQuery.set_viewXml(q);
+news.collListItem = news.oList.getItems(camlQuery);
+news.clientContext.load(news.collListItem);
+this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+news.clientContext.executeQueryAsync(Function.createDelegate(this, news.onGetItemsQuerySucceeded), Function.createDelegate(this, news.onQueryFailed));        
+}
+
+news.onGetItemsQuerySucceeded = function(sender, args) {
+news.imgItems = [];
+//news.imgItems.length = 3;
+news.textItems = [];
+//news.textItems.length = 4;
+var listItemEnumerator = news.collListItem.getEnumerator();	
+while (listItemEnumerator.moveNext()) {
+var oListItem = listItemEnumerator.get_current();
+var item = {
+ id: oListItem.get_item('ID'),
+ title: oListItem.get_item('Title'),
+ url: oListItem.get_item('Url'),
+ description: oListItem.get_item('Description'),
+ imageUrl: oListItem.get_item('ImageUrl'),
+ order: oListItem.get_item('Order0'),
+ category: oListItem.get_item('Category'),
+ tag: oListItem.get_item('Tag'),
+ articlePublishDate: oListItem.get_item('ArticlePublishDate')
+ };
+if(item.imageUrl)
+ news.imgItems.push(item);
+else
+ news.textItems.push(item);
+}	
+
+news.populateImageNews(null);
+news.populateTextNews(null);
+}
+
+news.populateImageNews = function(category){
+if(news.imgItems.length){
+$('#news-section .nws-artcl').each(function(i, obj) {	
+ if(news.imgItems[i]){
+     if(!category || (category && news.imgItems[i].category.length && news.imgItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
+         
+         $(this).attr('src', news.imgItems[i].imageUrl.$1_1);
+         $(this).find('.badge').text(news.imgItems[i].tag);
+         $(this).find('.cheading').text(news.imgItems[i].title).attr('href', news.imgItems[i].url.$1_1).attr("target","_blank");
+         $(this).find('.cdesc').text(news.imgItems[i].description);
+         $(this).find('.img-hldr').css("background-image", "url("+news.imgItems[i].imageUrl.$1_1+")");  
+         //data available for this div so we show it. 
+         news.manageVisibility('show', 'image', $(this));
+     }
+     else{
+         //data not available for this div so we hide it. 
+         news.manageVisibility('hide', 'image', $(this));
+     }
+ }
+ else{
+     //data not available for this div so we hide it. 
+     news.manageVisibility('hide', 'image', $(this));
+ }
+});
+}
+}
+
+news.populateTextNews = function(category){
+if(news.textItems.length){
+$('#detail-sec').find('.list-group-item').each(function(i, obj) {
+ if(news.textItems[i]){
+     if(!category || (category && news.textItems[i].category && news.textItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
+         $(this).find('.dheading').text(news.textItems[i].title);
+         $(this).find("a").attr('href', news.textItems[i].url.$1_1).attr("target","_blank");
+         
+         $(this).find('.date').text(news.textItems[i].articlePublishDate.toString().length > 10 ? news.textItems[i].articlePublishDate.toString().slice(4, 10) : news.textItems[i].articlePublishDate.toString());
+         if(!(news.textItems[i+1])){
+             $(this).css('border', 'none');
+         }
+         news.manageVisibility('show', 'text', $(this));
+     }
+     else
+         news.manageVisibility('hide', 'text', $(this));
+ }
+ else{
+     //$(this).css('border', 'none');
+     news.manageVisibility('hide', 'text', $(this));
+ }
+});
+}
+}
+
+news.filter = function(index){
+debugger;		
+if(news.categories[index]){
+var category = news.categories[index];
+news.populateImageNews(category);
+news.populateTextNews(category);
+}
+}
+</script>
