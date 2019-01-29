@@ -1,0 +1,56 @@
+<script>
+
+    SpoUtility.readyInit(function (Caller) {
+    
+        // Get Top 3 Frequently Asked Questions Which are Active
+        var Query = "<View><Query><Where>" +
+                    "<Eq><FieldRef Name='IsActive' /><Value Type='Boolean'>1</Value></Eq>" +
+                    "</Where><OrderBy><FieldRef Name='Order' Ascending='TRUE'/></OrderBy></Query><RowLimit>3</RowLimit></View>";
+        var Criteria =
+        {
+            query: Query,
+        }
+    
+        Caller.getAllItemsWithCriteria("Faqs", Criteria, SuccessFaqCallback, ErrorFaqCallBack);
+        function SuccessFaqCallback(collListItem, sender, args) {
+            var listItemInfo = "";
+            var listItemEnumerator = collListItem.getEnumerator();
+            while (listItemEnumerator.moveNext()) {
+    
+                var oListItem = listItemEnumerator.get_current();
+    
+                var Id = oListItem.get_id();
+                var Title = oListItem.get_item('Title');
+                var Description = oListItem.get_item('Description');
+                var DescriptionTextOnly = $(Description).text();
+
+                var el = '<div class="card border-0">' +
+                                '<div class="card-header bg-transparent px-0" id="heading' + Id + '">' +
+                                    '<p class="mb-0">' +
+                                        '<button type="button" class="btn btn-link btn-sm text-decoration-none font-weight-bold text-dark text-left py-0 pl-4 position-relative collapsed" data-toggle="collapse" data-target="#collapse' + Id + '" aria-controls="collapse' + Id + '" aria-expanded="false">' +
+                                            '<i class="fa position-absolute tl-0 mt-1" aria-hidden="true"></i> ' + Title + '' +
+                                        '</button>' +
+                                    '</p>' +
+                                '</div>' +
+    
+                                '<div id="collapse' + Id + '" class="collapse" aria-labelledby="heading' + Id + '" data-parent="#accordion" style="">' +
+                                    '<div class="card-body">' +
+                                        DescriptionTextOnly +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+    
+                $(".faq").find("#accordion").append(el);
+            }
+    
+        }
+        function ErrorFaqCallBack(sender, args) {
+            alert('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+        }
+    });
+    </script>
+    <div class="faq-bx">
+        <h5 class="font-weight-bold text-dark edwards-brdr mb-4">FAQ's</h5>
+        <div id="accordion">        
+        </div>
+    </div>

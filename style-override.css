@@ -10,7 +10,7 @@
     background-color: transparent;
 }
 
-/* Global IT  department home page - documents library app part */
+
 .docs-box table table{ 
 	width: 100%;
 }
@@ -34,4 +34,7 @@
     font-size: 15px;
     font-weight: bold;
 }
-/* IT outages department home page - documents library app part */
+.faq .col-lg-8 .ms-webpart-zone, .faq .col-lg-8 .ms-webpart-cell-vertical-inline-table, .faq .col-lg-8 .ms-webpart-chrome-vertical{
+	display: block;
+}
+
