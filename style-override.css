@@ -38,3 +38,6 @@
 	display: block;
 }
 
+.glbl-info-tech .ms-webpart-zone, .glbl-info-tech .ms-webpart-cell-vertical-inline-table, .glbl-info-tech .ms-webpart-chrome-vertical{
+	display: block;
+}
