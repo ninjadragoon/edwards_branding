@@ -1,0 +1,141 @@
+<div class="regional-events-sec">
+        <h5 class="font-weight-bold text-dark edwards-brdr mb-4">Upcoming Events</h5>
+        <a href="#" class="text-primary position-absolute tr-0 mr-3 mt-2"><small>View all</small></a>
+        <div class="media align-items-center rgnl-evnts mb-4">
+            <div class="mnth-blk border mr-3">
+                <div class="text-center d-flex justify-content-center flex-column h-100"><h5><small>-</small><br><b>-</b></h5></div>
+            </div>
+          <a href="#" class="media-body text-decoration-none d-block">
+            <p class="m-0 font-weight-bold text-dark">- </p>
+              <p class="m-0 text-dark">-</p>
+          </a>
+        </div>
+        <div class="media align-items-center rgnl-evnts mb-4">
+            <div class="mnth-blk border mr-3">
+                <div class="text-center d-flex justify-content-center flex-column h-100"><h5><small>Jan</small><br><b>12</b></h5></div>
+            </div>
+          <a href="#" class="media-body text-decoration-none d-block">
+            <p class="m-0 font-weight-bold text-dark">Events title goes here extra space for lengthy title </p>
+              <p class="m-0 text-dark">Day month day, other parameters</p>
+          </a>
+        </div>
+        <div class="media align-items-center rgnl-evnts mb-4">
+            <div class="mnth-blk border mr-3">
+                <div class="text-center d-flex justify-content-center flex-column h-100"><h5><small>Jan</small><br><b>12</b></h5></div>
+            </div>
+          <a href="#" class="media-body text-decoration-none d-block">
+            <p class="m-0 font-weight-bold text-dark">Events title goes here extra space for lengthy title </p>
+              <p class="m-0 text-dark">Day month day, other parameters</p>
+          </a>
+        </div>
+        <div class="media align-items-center rgnl-evnts mb-4">
+            <div class="mnth-blk border mr-3">
+                <div class="text-center d-flex justify-content-center flex-column h-100"><h5><small>Jan</small><br><b>12</b></h5></div>
+            </div>
+          <a href="#" class="media-body text-decoration-none d-block">
+            <p class="m-0 font-weight-bold text-dark">Events title goes here extra space for lengthy title </p>
+              <p class="m-0 text-dark">Day month day, other parameters</p>
+          </a>
+        </div>
+        </div>
+    <script>
+    /*===  variables ===*/
+    var regEvents = {
+    clientContext: null,
+    oList: null,
+    editMode: false,
+    responseMsg: '',
+    items: []
+    };
+    /*===  variables ===*/	
+    
+    /*===  helper functions ===*/
+    regEvents.onQueryFailed = function(sender, args) {
+    debugger;
+    var customMsg = this.errorMsg? this.errorMsg : '';
+    alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+    }
+    
+    /*===  visible = string('show'/'hide') ===*/
+    regEvents.manageVisibility = function(visible, item){
+    if(visible == 'show')
+    item.css("display", "flex");
+    else
+    item.css("display", "none");	
+    }
+    /*===  helper functions ===*/
+    
+    $( document ).ready(function() {
+    SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+    regEvents.getItems();
+    });
+    });
+    
+    regEvents.getItems = function(){    
+    regEvents.clientContext = new SP.ClientContext();
+    regEvents.oList = regEvents.clientContext.get_web().get_lists().getByTitle('Upcoming Events');
+    var camlQuery = new SP.CamlQuery();
+    //get first 4 events starting from today and onwards.
+    var q = "<View><Query><Where><Geq><FieldRef Name='EventDate' /><Value Type='DateTime'> <Today  /> </Value></Geq></Where><OrderBy><FieldRef Name='EventDate' Ascending='True' /></OrderBy></Query><RowLimit>4</RowLimit></View>";
+    camlQuery.set_viewXml(q);
+    regEvents.collListItem = regEvents.oList.getItems(camlQuery);
+    regEvents.clientContext.load(regEvents.collListItem, "Include(ID, Title, Description, EventDate, EncodedAbsUrl)");
+    this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+    regEvents.clientContext.executeQueryAsync(Function.createDelegate(this, regEvents.onGetItemsQuerySucceeded), Function.createDelegate(this, regEvents.onQueryFailed));  
+    }
+    
+    regEvents.onGetItemsQuerySucceeded = function(sender, args) {
+    regEvents.items = [];
+    var listItemEnumerator = regEvents.collListItem.getEnumerator();	
+    while (listItemEnumerator.moveNext()) {
+    try
+    {
+    var oListItem = listItemEnumerator.get_current();
+    var item = {
+    id: oListItem.get_item('ID'),
+    title: oListItem.get_item('Title'),
+    description: oListItem.get_item('Description'),
+    eventDate: oListItem.get_item('EventDate'),
+    url: '/sites/OEBrand/Lists/Regional%20Events/DispForm.aspx?ID=' + oListItem.get_item('ID')
+    };
+    var dateAndMonth = item.eventDate.toString().slice(4, 10); //returns "Dec 13"
+    item.date = dateAndMonth.split(' ')[1];
+    item.month = dateAndMonth.split(' ')[0];
+    regEvents.items.push(item);
+    }
+    catch(e)
+    {
+    console.log(e);
+    }
+    
+    }	
+    
+    if(regEvents.items.length){
+    if($('.regional-events-sec .rgnl-evnts').length > 0)
+    {
+    $('.regional-events-sec .rgnl-evnts').each(function(i, obj) {
+    if(regEvents.items[i]){
+    $(this).find('b').text(regEvents.items[i].date);
+    $(this).find('small').text(regEvents.items[i].month);
+    $(this).find('.media-body').attr('href', regEvents.items[i].url).attr('target', '_blank');
+    $(this).find('.media-body p:first-child').text(regEvents.items[i].title);
+    if(regEvents.items[i].description){
+    //remove html tags from formatted string.
+    var formattedTxt = regEvents.items[i].description;
+    var plainTxt = $(formattedTxt).text();
+    $(this).find('.media-body p:last-child').text(plainTxt);
+    }
+    else
+    $(this).find('.media-body p:last-child').text('Description not available.');
+    }
+    else
+    regEvents.manageVisibility('hide', $(this));
+    });
+    }
+    
+    }
+    }
+    
+    
+    
+    </script>
