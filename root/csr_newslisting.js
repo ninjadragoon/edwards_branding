@@ -23,10 +23,10 @@ function renderFooter(ctx){
         var lastRow = ctx.ListData.LastRow;
         var prev = ctx.ListData.PrevHref;
         var next = ctx.ListData.NextHref;
-        var html = "<div class='Paging' style='box-sizing: unset;'>";
-        html += prev ? "<a class='ms-commandLink ms-promlink-button ms-promlink-button-enabled' href='" + prev + "'><span class='ms-promlink-button-image'><img class='ms-promlink-button-left' src='/_layouts/15/images/spcommon.png?rev=23' /></span></a>" : "";
+        var html = "<div class='Paging container'>";
+        html += prev ? "<a style='box-sizing: content-box;' class='ms-commandLink ms-promlink-button ms-promlink-button-enabled' href='" + prev + "'><span class='ms-promlink-button-image'><img class='ms-promlink-button-left' src='/_layouts/15/images/spcommon.png?rev=23' /></span></a>" : "";
         html += "<span class='ms-paging'><span class='First'>" + firstRow + "</span> - <span class='Last'>" + lastRow + "</span></span>";
-        html += next ? "<a class='ms-commandLink ms-promlink-button ms-promlink-button-enabled' href='" + next + "'><span class='ms-promlink-button-image'><img class='ms-promlink-button-right' src='/_layouts/15/images/spcommon.png?rev=23'/></span></a>" : "";
+        html += next ? "<a style='box-sizing: content-box;' class='ms-commandLink ms-promlink-button ms-promlink-button-enabled' href='" + next + "'><span class='ms-promlink-button-image'><img class='ms-promlink-button-right' src='/_layouts/15/images/spcommon.png?rev=23'/></span></a>" : "";
         html += "</div>";
         return html;
 }

@@ -1,4 +1,5 @@
-<div class="edwards-banner-section row py-lg-3"> 
+<!-- below div initially set to 'd-none' so it gets visible only after data is loaded.  -->
+<div class="edwards-banner-section row py-lg-3 d-none"> 
     <div class="col p-0 d-none d-lg-block"> 
        <div class="row no-gutters"> 
           <div class="col pr-3"> 
@@ -174,6 +175,9 @@
              if(item.taxKeyword._Child_Items_.length)
                  $('.edwards-banner-section').find('.banner:eq('+ i +')').find('.badge').text(item.taxKeyword._Child_Items_[0].Label);
              $('.edwards-banner-section .banner:eq('+ i +')').attr("href", item.pageUrl);	
+         }
+         if(listItemInfo.length){
+            $('.edwards-banner-section').removeClass('d-none');
          }
          
          /*load data into carousel(it appears in mobile devices only)*/ 
