@@ -118,14 +118,18 @@ if(regEvents.items[i]){
 $(this).find('.date').text(regEvents.items[i].date);
 $(this).find('.month').text(regEvents.items[i].month);
 $(this).find('.cards-heading').text(regEvents.items[i].title).attr('href', regEvents.items[i].url).attr('target', '_blank');
+$(this).find('.media-body').prop('href', '/Lists/Regional%20Events/DispForm.aspx?ID=' + regEvents.items[i].id).prop('target', '_blank');
 if(regEvents.items[i].description){
-//remove html tags from formatted string.
-var formattedTxt = regEvents.items[i].description;
-var plainTxt = $(formattedTxt).text();
-$(this).find('.chanel-desc').text(plainTxt);
+  //remove html tags from formatted string.
+  var formattedTxt = regEvents.items[i].description;
+  var plainTxt = $(formattedTxt).text();
+  var truncatedTxt = plainTxt;
+  if(plainTxt.length && plainTxt.length > 20)
+      truncatedTxt = plainTxt.substring(0, 70) + '...';
+  $(this).find('.chanel-desc').text(truncatedTxt).prop('title', plainTxt);
 }
 else
-$(this).find('.chanel-desc').text('Description not available.');
+  $(this).find('.chanel-desc').text('Description not available.');
 }
 else
 regEvents.manageVisibility('hide', $(this));
