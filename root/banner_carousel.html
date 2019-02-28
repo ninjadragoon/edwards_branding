@@ -1,5 +1,5 @@
-<!-- below div initially set to 'd-none' so it gets visible only after data is loaded.  -->
-<div class="edwards-banner-section row py-lg-3 d-none"> 
+
+<div class="edwards-banner-section row py-lg-3"> 
     <div class="col p-0 d-none d-lg-block"> 
        <div class="row no-gutters"> 
           <div class="col pr-3"> 
@@ -111,17 +111,13 @@
      /*===  variables ===*/
      
      /*===  get list items () called from here ===*/
-     window.onload = function() {
-         for(var i=0; i<5; i++){
-             $('.edwards-banner-section .banner-img' + i).css('background-image', 'none');
-         }
+
+     $( document ).ready(function() {
          SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
-             debugger;
-             getHomePageBannerItems();
+            getHomePageBannerItems();
          });
-         //not working when page published
-         //ExecuteOrDelayUntilScriptLoaded(getHomePageBannerItems, "sp.js");
-     };
+      });
+
      /*===  get list items called from here ===*/
      
      
@@ -165,7 +161,6 @@
                  };
              listItemInfo.push(item);
          }
-         debugger;
          for (var i = 0; i < listItemInfo.length; i++) {
              var item = listItemInfo[i];
              if(item.carouselImage)
@@ -176,9 +171,9 @@
                  $('.edwards-banner-section').find('.banner:eq('+ i +')').find('.badge').text(item.taxKeyword._Child_Items_[0].Label);
              $('.edwards-banner-section .banner:eq('+ i +')').attr("href", item.pageUrl);	
          }
-         if(listItemInfo.length){
-            $('.edwards-banner-section').removeClass('d-none');
-         }
+         // if(listItemInfo.length){
+         //    $('.edwards-banner-section').removeClass('d-none');
+         // }
          
          /*load data into carousel(it appears in mobile devices only)*/ 
          $('.edwards-banner-section .carousel-item').each(function(i, obj) {

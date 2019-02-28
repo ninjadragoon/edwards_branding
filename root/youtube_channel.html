@@ -4,25 +4,29 @@
         <h4 class="text-uppercase font-weight-bold ls-1 text-white edwards-brdr no-gry mb-3">edwards channel</h4>
         <div class="d-none d-lg-block edwards-videos">
             <div class="embed-responsive embed-responsive-16by9 mb-4">
-                <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                <!-- <video controls>
+                    <source src="" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video> -->
                 <div class="position-absolute bl-0 text-white mx-auto px-3 mb-3">Short description of the video hightlighting video content.</div>
             </div>
             <div class="row">
                 <div class="col">
                     <div class="embed-responsive embed-responsive-16by9 mb-2">
-                    <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                    <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                     </div>
                     <b class="text-white">Major updates to technology</b>
                 </div>
                 <div class="col">
                     <div class="embed-responsive embed-responsive-16by9 mb-2">
-                    <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                    <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                     </div>
                     <b class="text-white">2018 Updates on Roadmap</b>
                 </div>
                 <div class="col">
                     <div class="embed-responsive embed-responsive-16by9 mb-2">
-                    <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                    <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                     </div>
                     <b class="text-white">2018 Updates on Roadmap</b>
                 </div>
@@ -34,19 +38,19 @@
                 <div class="carousel-inner">
                   <div class="carousel-item active">
                         <div class="embed-responsive embed-responsive-16by9 mb-4">
-                            <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                            <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                             <div class="position-absolute bl-0 text-white mx-auto px-3 mb-3">Short description of the video hightlighting video content.</div>
                         </div>
                   </div>
                   <div class="carousel-item">
                         <div class="embed-responsive embed-responsive-16by9 mb-4">
-                            <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                            <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                             <div class="position-absolute bl-0 text-white mx-auto px-3 mb-3">Short description of the video hightlighting video content.</div>
                         </div>
                   </div>
                   <div class="carousel-item">
                         <div class="embed-responsive embed-responsive-16by9 mb-4">
-                            <iframe src="https://www.youtube.com/embed/xk1ViU6w3QU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                            <iframe style="background-image: url(https://edwardslifesciences.sharepoint.com/PublishingImages/video_placeholder.png)" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                             <div class="position-absolute bl-0 text-white mx-auto px-3 mb-3">Short description of the video hightlighting video content.</div>
                         </div>
                   </div>
@@ -148,6 +152,10 @@ youtube.getItems = function(){
 }
 
 youtube.onGetItemsQuerySucceeded = function(sender, args) {
+    
+    return;
+
+
     youtube.items = [];
     var listItemEnumerator = youtube.collListItem.getEnumerator();	
     while (listItemEnumerator.moveNext()) {
@@ -162,6 +170,8 @@ youtube.onGetItemsQuerySucceeded = function(sender, args) {
     }	
 
     if(youtube.items.length){
+        // $('.edwards-channel-sec .embed-responsive.mb-4 video source').attr('src', youtube.items[0].url.$1_1);
+        // $('.edwards-channel-sec .embed-responsive.mb-4 video')[0].load();
         $('.edwards-channel-sec .embed-responsive.mb-4 iframe').attr('src', youtube.items[0].url.$1_1);
         $('.edwards-channel-sec .embed-responsive.mb-4 .text-white').text(youtube.items[0].title);
 
