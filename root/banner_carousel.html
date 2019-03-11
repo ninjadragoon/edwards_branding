@@ -51,41 +51,41 @@
        <div class=" col p-0 d-block d-lg-none"> 
           <div class="carousel slide" id="carouselExampleIndicators" data-interval="false" data-ride="carousel"> 
              <div class="carousel-inner"> 
-                <div class="carousel-item banner active" > 
+                <a href="" class="carousel-item banner active" > 
                    <img class="w-100 invisible" src="" alt=""/> 
                    <div class="headings position-absolute bl-0 mx-auto mb-4 px-3"> 
                       <h5 class="text-white">-</h5> 
                       <p class="text-white m-0 small">-</p> 
                    </div> 
-                </div> 
-                <div class="carousel-item banner" > 
+                  </a> 
+                <a href="" class="carousel-item banner" > 
                    <img class="w-100 invisible" src="" alt=""/> 
                    <div class="headings position-absolute bl-0 mx-auto mb-4 px-3"> 
                       <h5 class="text-white">-</h5> 
                       <p class="text-white m-0 small">-</p> 
                    </div> 
-                </div> 
-                <div class="carousel-item banner" > 
+                </a> 
+                <a href="" class="carousel-item banner" > 
                    <img class="w-100 invisible" src="/teams/OEB/PublishingImages/Apage3_Image.jpg" alt=""/> 
                    <div class="headings position-absolute bl-0 mx-auto mb-4 px-3"> 
                       <h5 class="text-white">-</h5> 
                       <p class="text-white m-0 small">-</p> 
                    </div> 
-                </div> 
-                <div class="carousel-item banner" > 
+                  </a> 
+                <a href="" class="carousel-item banner" > 
                    <img class="w-100 invisible" src="/teams/OEB/PublishingImages/Apage3_Image.jpg" alt=""/> 
                    <div class="headings position-absolute bl-0 mx-auto mb-4 px-3"> 
                       <h5 class="text-white">-</h5> 
                       <p class="text-white m-0 small">-</p> 
                    </div> 
-                </div> 
-                <div class="carousel-item banner" > 
+                  </a> 
+                <a href="" class="carousel-item banner" > 
                    <img class="w-100 invisible" src="/teams/OEB/PublishingImages/Apage3_Image.jpg" alt=""/> 
                    <div class="headings position-absolute bl-0 mx-auto mb-4 px-3"> 
                       <h5 class="text-white">-</h5> 
                       <p class="text-white m-0 small">-</p> 
                    </div> 
-                </div> 
+                  </a> 
              </div> 
              <ol class="carousel-indicators position-static"> 
                 <li class="active" data-slide-to="0" data-target="#carouselExampleIndicators">
@@ -103,26 +103,27 @@
        </div> 
     </div> 
     <!-- end Mobile banner -->​<br/>​<br/> 
-       <script type="text/javascript">	
+
+
+   <script type="text/javascript">	
+
      /*===  variables ===*/
      var clientContext;
      var oList;
      var responseMsg = '';
+     var newsType = "Global";
      /*===  variables ===*/
      
      /*===  get list items () called from here ===*/
-
      $( document ).ready(function() {
          SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
             getHomePageBannerItems();
          });
       });
-
      /*===  get list items called from here ===*/
      
      
-     /*===  helper functions ===*/
-     
+     /*===  helper functions ===*/   
      function onQueryFailed(sender, args) {
          var customMsg = this.errorMsg? this.errorMsg : '';
          alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
@@ -131,15 +132,12 @@
      
      function getHomePageBannerItems() {
          clientContext = new SP.ClientContext();
-         oList = clientContext.get_web().get_lists().getByTitle('Pages');
+         oList = clientContext.get_web().get_lists().getByTitle('News');
          var camlQuery = new SP.CamlQuery();
-         var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='CarouselActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='CarouselOrder' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+         var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "<Eq><FieldRef Name='News_x0020_Type'/><Value Type='Choice'>" + newsType + "</Value></Eq>" + "</And> </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query><RowLimit>5</RowLimit></View>";
          camlQuery.set_viewXml(q);
          this.collListItem = oList.getItems(camlQuery);
-         //if we don't use 'include' all fields are returned.
-         //Since we also need every page's url, we need to get built-in 'EncodedAbsUrl' field which works only if we include it.
-         //For that, we had to include all the other fields too.
-         clientContext.load(collListItem, "Include(ID, CarouselActive, CarouselTitle, CarouselDescription, TaxKeyword, CarouselImage, CarouselOrder, EncodedAbsUrl)");
+         clientContext.load(collListItem);
          this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
          clientContext.executeQueryAsync(Function.createDelegate(this, this.onHomePageBannerItemsQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));        
      }
@@ -151,40 +149,36 @@
              var oListItem = listItemEnumerator.get_current();
              var item = {
                  id: oListItem.get_item('ID'),
-                 carouselActive: oListItem.get_item('CarouselActive'),
-                 carouselTitle: oListItem.get_item('CarouselTitle'),
-                 carouselDescription: oListItem.get_item('CarouselDescription'),
-                 taxKeyword: oListItem.get_item('TaxKeyword'),
-                 carouselImage: oListItem.get_item('CarouselImage'),
-                 carouselOrder: oListItem.get_item('CarouselOrder'),
-                 pageUrl: oListItem.get_item('EncodedAbsUrl')
+                 carouselActive: oListItem.get_item('IsActive'),
+                 carouselTitle: oListItem.get_item('Title'),
+                 carouselDescription: oListItem.get_item('Description'),
+                 taxKeyword: oListItem.get_item('Tag'),
+                 carouselImage: oListItem.get_item('ImageUrl'),
+                 carouselOrder: oListItem.get_item('Order0'),
+                 pageUrl: oListItem.get_item('Url')
                  };
              listItemInfo.push(item);
          }
+
          for (var i = 0; i < listItemInfo.length; i++) {
              var item = listItemInfo[i];
              if(item.carouselImage)
              $('.edwards-banner-section').find('.banner:eq('+ i +')').css('background-image', 'url(' + item.carouselImage.$1_1 + ')');
              $('.edwards-banner-section').find('.banner:eq('+ i +')').find('h5').text(item.carouselTitle);
              $('.edwards-banner-section').find('.banner:eq('+ i +')').find('p').text(item.carouselDescription);
-             if(item.taxKeyword._Child_Items_.length)
-                 $('.edwards-banner-section').find('.banner:eq('+ i +')').find('.badge').text(item.taxKeyword._Child_Items_[0].Label);
-             $('.edwards-banner-section .banner:eq('+ i +')').attr("href", item.pageUrl);	
+             if(item.taxKeyword)
+                 $('.edwards-banner-section').find('.banner:eq('+ i +')').find('.badge').text(item.taxKeyword);
+             $('.edwards-banner-section .banner:eq('+ i +')').attr("href", item.pageUrl? item.pageUrl.$1_1 : "page url not found");	
          }
-         // if(listItemInfo.length){
-         //    $('.edwards-banner-section').removeClass('d-none');
-         // }
          
          /*load data into carousel(it appears in mobile devices only)*/ 
          $('.edwards-banner-section .carousel-item').each(function(i, obj) {
              if(listItemInfo[i]){
+                 $(this).attr('href', listItemInfo[i].pageUrl? listItemInfo[i].pageUrl.$1_1: "page url not found");
                  if(listItemInfo[i].carouselImage)
                      $(this).children("img:first").attr('src', listItemInfo[i].carouselImage.$1_1);
                  $(this).find("h5:first").text(listItemInfo[i].carouselTitle);
                  $(this).find("p:first").text(listItemInfo[i].carouselDescription);
-                 //if(listItemInfo[i].taxKeyword._Child_Items_.length)
-                     //$(this).find("div.type:first").text(listItemInfo[i].taxKeyword._Child_Items_[0].Label);
-                 //$(this).attr("href", listItemInfo[i].pageUrl);
              }
          });
      }
