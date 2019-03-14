@@ -1,10 +1,18 @@
-<!-- <style>
-    #edwards-news-03082019{
+<style>
+    #edwards-news-03082019 .glbl-strs .card small{
+        font-weight: bold;
+    }
+    #edwards-news-03082019 .glbl-strs .card h6{
+        font-size: 90%;
+        margin-top: 10px;
+    }
+    #edwards-news-03082019 .card.ptnt-crd h4{
+        color: white;
     }
     @media (max-width: 400px){
         
     }
-</style> -->
+</style>
 
 
 <div id="edwards-news-03082019">
@@ -207,6 +215,15 @@ edwardsNews.getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
+edwardsNews.truncateText = function(text, tLength){
+    if(!text)
+        return "";
+    else if(text.length > tLength)
+        return text.substring(0, tLength) + '...';
+    else
+        return text;
+}
+
 /*===  helper functions ===*/
 
 $( document ).ready(function() {
@@ -216,14 +233,16 @@ $( document ).ready(function() {
             if(newsType == "regional"){
                 $('[href="#regional-news"]').tab('show');
                 //news type, all news categories.
-                edwardsNews.getGlobal(edwardsNews.newsType[1], edwardsNews.newsCategories.regional);
+                // edwardsNews.getGlobal(edwardsNews.newsType[1], edwardsNews.newsCategories.regional);
             }
             else{
                 $('[href="#global-news"]').tab('show');
-                edwardsNews.getGlobal(edwardsNews.newsType[0], edwardsNews.newsCategories.global);
+                // edwardsNews.getGlobal(edwardsNews.newsType[0], edwardsNews.newsCategories.global);
             }
 
-         }   
+         } 
+         edwardsNews.getGlobal(edwardsNews.newsType[1], edwardsNews.newsCategories.regional);  
+         edwardsNews.getGlobal(edwardsNews.newsType[0], edwardsNews.newsCategories.global);
     });
 });
 
@@ -267,8 +286,8 @@ edwardsNews.getNews = function(type, cat, limit){
                     var oListItem = listItemEnumerator.get_current();
                     var item = {
                             id: oListItem.get_item('ID'),
-                            title: oListItem.get_item('Title'),
-                            carouselDescription: oListItem.get_item('Description'),
+                            title: edwardsNews.truncateText(oListItem.get_item('Title'), 50),
+                            carouselDescription: edwardsNews.truncateText(oListItem.get_item('Description'), 70),
                             taxKeyword: oListItem.get_item('Tag'),
                             carouselImage: oListItem.get_item('ImageUrl'),
                             carouselOrder: oListItem.get_item('Order0'),
@@ -293,8 +312,6 @@ edwardsNews.getNews = function(type, cat, limit){
                             edwardsNews.regional.employee.push(item);
                     }    
                 }
-
-                debugger;
 
                 //render logic here.
                 //if(type == edwardsNews.newsType[0]){
@@ -327,7 +344,6 @@ edwardsNews.getNews = function(type, cat, limit){
 
 
 edwardsNews.renderGlobalTopStories = function(type){
-    debugger;
     var row1 = '', row2 = '', sidebar = '';
     var row1Id = '', row2Id = '', sidebarId = '';
     var items = [];
