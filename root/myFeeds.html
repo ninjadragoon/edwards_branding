@@ -1,0 +1,237 @@
+<style>
+    #myfeed-slide{
+        margin-top: 15px;
+    }
+</style>
+
+<div id="myfeed-slide" class="hrzntl-tb-cntrl mb-3 position-relative">
+        <div class="external feeds-external-div px-3" id="content">
+            <ul class="scroll-container nav nav-pills FeedsType" id="pills-tab" role="tablist">
+                <!-- append li's here -->
+            </ul>
+            </div>
+        <a class="carousel-control-prev" href="javascript:void(0)" id="feeds-left-btn">
+            <i class="fa fa-chevron-left fa-lg text-muted"></i>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="javascript:void(0)" id="feeds-right-btn">
+            <i class="fa fa-chevron-right fa-lg text-muted"></i>
+            <span class="sr-only">Previous</span>
+        </a>
+</div>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="FeedsContainer" role="tabpanel" style="max-height: 345px; overflow-y: auto;">
+        <ul class="list-group list-group-flush lst-with-brdr" id="FeedsList">
+            <!-- append li's here -->
+        </ul>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        var AllFeedsTypes = [];
+        var EdwardsFeeds = [];
+        $(document).ready(function () {
+
+            // Fetch Here the All Feeds Types and Edwards Feeds
+            SpoUtility.readyInit(function (Caller) {
+
+                // Fetch All Feeds Types
+                Caller.getAllItems("All Feeds Types", [], OnFetchAllFeedsSuccess, OnError);
+                Caller.getAllItems("Edwards Feeds", [], OnFetchEdwardsFeedsSuccess, OnError);
+            });
+        });
+
+        $('#feeds-right-btn').click(function() {
+            event.preventDefault();    
+            $('.feeds-external-div').animate({
+                scrollLeft: "+=100px"
+            }, "fast");
+        });
+        
+        $('#feeds-left-btn').click(function() {
+            event.preventDefault();
+            $('.feeds-external-div').animate({
+                scrollLeft: "-=100px"
+            }, "fast");
+        });
+
+
+
+
+        function OnFetchAllFeedsSuccess(collListItem, sender, args) {
+
+            var listItemInfo = '';
+            var listItemEnumerator = collListItem.getEnumerator();
+            AllFeedsTypes = [];
+            while (listItemEnumerator.moveNext()) {
+                var oListItem = listItemEnumerator.get_current();
+                var Id = oListItem.get_id();
+                var Title = oListItem.get_item('Title');
+                var FeedUrl = oListItem.get_item('FeedUrl');
+                var obj = {
+                    Id: Id,
+                    Title: Title,
+                    FeedUrl: FeedUrl,
+                    IsActive: Title == "Edwards" ? true : false
+                }
+
+                AllFeedsTypes.push(obj);
+            }
+
+            // Render Here the Html For Tabls For Feeds Type and Make Edwards Active Tab
+            /*  Write Your Script Here */
+            $(".FeedsType").empty();
+            for (var i = 0 ; i < AllFeedsTypes.length; i++) {
+                var Li = "";
+                Li = '<li class="internal nav-item">'+
+                    '	<a class="nav-link ' + (AllFeedsTypes[i].IsActive ? 'active': '' )  + '" onclick="FetchFeeds(this)" id="' + AllFeedsTypes[i].Id + '"' + 'data-toggle="pill" href="#" role="tab" aria-controls="">'+
+                    '		<i class="far fa-dot-circle"></i> '+
+                    AllFeedsTypes[i].Title +
+                    '	</a>'+
+                    '</li>';
+
+                $(".FeedsType").append(Li);
+            }
+        }
+
+        function OnFetchEdwardsFeedsSuccess(collListItem, sender, args) {
+
+            var listItemInfo = '';
+            var listItemEnumerator = collListItem.getEnumerator();
+
+            while (listItemEnumerator.moveNext()) {
+                var oListItem = listItemEnumerator.get_current();
+                var Id = oListItem.get_id();
+                var Title = oListItem.get_item('Title');
+                var FeedUrl = oListItem.get_item('Url');
+                var FeedType = oListItem.get_item('FeedType');
+                var IsActive = oListItem.get_item('IsActive');
+                var obj = {
+                    Id: Id,
+                    Title: Title,
+                    FeedUrl: FeedUrl,
+                    FeedType: FeedType,
+                    IsActive: IsActive
+                }
+
+                EdwardsFeeds.push(obj);
+            }
+
+            RenderEdwardsFeeds(EdwardsFeeds);
+        }
+
+
+        function RenderEdwardsFeeds(EdwardsFeeds)
+        {
+            $("#FeedsList").empty();
+            for (var i = 0 ; i < EdwardsFeeds.length; i++) {
+                var Li = "";
+
+
+                Li = '<li class="list-group-item">' +
+                        '<a href="' + EdwardsFeeds[i].FeedUrl + '" class="font-weight-bold">' + EdwardsFeeds[i].Title + '<br><small class="font-weight-bold pr-1">' + EdwardsFeeds[i].FeedType + '</small></a>' +
+                        '</li>';
+
+
+                $("#FeedsList").append(Li);
+
+
+
+            } // 
+        }
+
+        // Fetch Feeds
+        function FetchFeeds(e) {
+            var Id = $(e).attr("Id");
+            var Filterel = AllFeedsTypes.filter(function (e) {
+
+                return e.Id == Id
+            });
+            if (Filterel != null && Filterel.length > 0) {
+                var el = Filterel[0];
+                if (el.Title == "Edwards") {
+                    // Render the Feeds From Edwards List
+                    RenderEdwardsFeeds(EdwardsFeeds);
+                }
+                else {
+
+                    // Get the Feed Url and Call for Xml
+                    var FeedUrl = el.FeedUrl;
+                    // Send an ajax call here
+                    $.ajax({
+                        url: FeedUrl,
+                        cache: false,
+                        data: "application/xml",
+                        success: function (html) {
+                            var Feeds = [];
+                            var ALLItems = $(html).find("item");
+                            if (ALLItems.length > 0) {
+                                for (var i = 0 ; i < ALLItems.length; i++) {
+                                    var CurrentItem = ALLItems[i];
+                                    var Title = $(CurrentItem).find("title").html();
+                                    var Description = $(CurrentItem).find("description").html();
+                                    var Image = $(CurrentItem).find("image").html();
+                                    var link = $(CurrentItem).find("link").html();
+                                    var PublishDate = $(CurrentItem).find("pubDate").html();
+                                    PublishDate = formatDate(new Date(PublishDate));
+                                    Feeds.push({
+                                        Title: Title != null && Title != undefined ? Title.replace("<![CDATA[", "").replace("]]>", "") : "",
+                                        Description: Description != null && Description != undefined ? Description.replace("<![CDATA[", "").replace("]]>", "") : "",
+                                        Image: Image != null && Image != undefined ? Image.replace("<![CDATA[", "").replace("]]>", "") : "",
+                                        Link: link != null && link != undefined ? link.replace("<![CDATA[", "").replace("]]>", "") : "",
+                                        PublishDate: PublishDate != null && PublishDate != undefined ? PublishDate.replace("<![CDATA[", "").replace("]]>", "") : "",
+
+                                    });
+                                }
+
+                                // For All Feeds Show them in the List
+                                $("#FeedsList").empty();
+                                for (var i = 0 ; i < Feeds.length; i++) {
+                                    var Li = "";
+
+
+                                    Li = '<li class="list-group-item">' +
+                                            '<a href="' + Feeds[i].Link + '" class="font-weight-bold">' + Feeds[i].Title + '<br><small class="font-weight-bold pr-1">' + Feeds[i].PublishDate + '</small></a>' +
+                                            '</li>';
+
+
+                                    $("#FeedsList").append(Li);
+
+
+
+                                } // 
+                            }
+
+                        },
+                        error: function () {
+
+                        }
+                    });
+                }
+            }
+
+        }
+
+        function formatDate(date) {
+            var monthNames = [
+                "January", "February", "March",
+                "April", "May", "June", "July",
+                "August", "September", "October",
+                "November", "December"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            return day + ' ' + monthNames[monthIndex] + ' ' + year;
+        }
+
+        // OnError For All SPO Utility Functions
+
+        function OnError(sender, args) {
+            console.log('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+        }
+
+    </script>
