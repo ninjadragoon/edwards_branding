@@ -1,27 +1,13 @@
 <div class="my-apps-sec">
         <h5 class="font-weight-bold text-dark edwards-brdr mb-4">My Apps</h5>
         <a href="#"  class="text-primary position-absolute tr-0 mr-3 mt-2"><small>Edit</small></a>
+
+        <p class="apps-not-found" style="padding: 25px 0 30px 0; color: gray; display: none;">You have not selected any apps yet!</p>
+
         <div class="hrzntl-tb-cntrl aps-crsl position-relative">
             <div class="external apps-external-div px-3" id="content">
-                <ul class="scroll-container nav nav-pills" id="pills-tab" role="tablist">
-                    <li class="internal nav-item active">
-                        <a class="nav-link active" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/skype-ico.png" class="img-fluid" style="height:34px;" alt=""><br><small>Skype</small></a>
-                    </li>
-                    <li class="internal nav-item">
-                        <a class="nav-link" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/outlook-ico.png" class="img-fluid" style="height:34px;" alt=""><br><small>Outlook</small></a>
-                    </li>
-                    <li class="internal nav-item">
-                        <a class="nav-link" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/excel-ico-2.png" class="img-fluid" style="height:34px;" alt=""><br><small>Excel</small></a>
-                    </li>
-                    <li class="internal nav-item">
-                        <a class="nav-link" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/delve-ico.png" class="img-fluid" style="height:34px;" alt=""><br><small>Delve</small></a>
-                    </li>
-                    <li class="internal nav-item">
-                        <a class="nav-link" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/global-icon.png" class="img-fluid" style="height:34px;" alt=""><br><small>Locations</small></a>
-                    </li>
-                    <li class="internal nav-item">
-                        <a class="nav-link" href="#"><img src="/_catalogs/masterpage/OneEdwards/images/people-icon.png" class="img-fluid" style="height:34px;" alt=""><br><small>Connect</small></a>
-                    </li>
+                <ul class="scroll-container nav nav-pills" id="my-apps-ul" role="tablist">
+                    
                 </ul>
                 </div>
             <a class="carousel-control-prev" href="javascript:void(0)" id="apps-left-btn">
@@ -286,7 +272,6 @@
                  
                  /*=== open modal and select my-links tab ===*/
                  $("#edit-myLinks-btn").click(function() {
-                    debugger;
                     $('#my-links-modal').modal('show');
                     $('.nav-tabs a[href="#myLinks-popuptab2"]').tab('show');
                     $('#myLinks-popuptab2 div.col').each(function(i, obj) {
@@ -299,7 +284,6 @@
                  
                  /*=== when modal save btn is clicked ===*/
                  $("#myLinks-save-btn").click(function() {
-                    debugger;
                     var tempUpdateItems = [], tempCreateItems = [], errMsg = '';		
                     $('#myLinks-popuptab2 div.col').each(function(i, obj) {
                             var title = $(this).find('input[type="text"]:first').val();
@@ -365,7 +349,6 @@
                 
                 
                 myLinks.retrieveListItems= function() {
-                    debugger;
                     myLinks.clientContext = new SP.ClientContext();
                     myLinks.oList = myLinks.clientContext.get_web().get_lists().getByTitle('Important Links');
                     var camlQuery = new SP.CamlQuery();
@@ -378,7 +361,6 @@
                 }
                 
                 myLinks.onQuerySucceeded = function(sender, args) {
-                    debugger;
                     myLinks.items = [];
                     myLinks.items.length = 6;
                     var listItemEnumerator = myLinks.collListItem.getEnumerator();	
@@ -398,12 +380,13 @@
                     for(var i = 0; i < myLinks.items.length; i++){
 
                         var link = myLinks.items[i];
-                        linkHtml = '<li class="list-group-item">'+
-                                    '	<a href="'+ link.url +'" class="text-black-50 ">'+
-                                    '		<small class="d-block float-left"><i class="fas fa-link "></i></small> '+
-                                    '		<small class="d-block pl-4">'+ link.title +'</small>'+
-                                    '	</a>'+
-                                    '</li>';
+                        if(link)
+                            linkHtml = '<li class="list-group-item">'+
+                                        '	<a href="'+ link.url +'" class="text-black-50 ">'+
+                                        '		<small class="d-block float-left"><i class="fas fa-link "></i></small> '+
+                                        '		<small class="d-block pl-4">'+ link.title +'</small>'+
+                                        '	</a>'+
+                                        '</li>';
                         if(i < 3){
                             col1 += linkHtml;
                         }
@@ -460,7 +443,6 @@
                 }
                 
                  myLinks.onCreateQuerySucceeded = function(sender, args) {
-                    debugger;
                     $('#my-links-modal').modal('hide');
                     //alert('item(s) created successfully!');
                     //myLinks.resetForm();
@@ -469,7 +451,6 @@
                 
                 //create single list item.
                 myLinks.updateListItem = function(item){
-                    debugger;
                     myLinks.oListItem = myLinks.oList.getItemById(item.id);
                     myLinks.oListItem.set_item('Title', item.title);
                     myLinks.oListItem.set_item('URL', item.url);
@@ -493,7 +474,6 @@
                 }
                 
                 myLinks.onUpdateQuerySucceeded = function(sender, args) {
-                    debugger;
                     alert('Links updated successfully!');
                     $('#my-links-modal').modal('hide');
                     //myLinks.retrieveListItems();
@@ -501,7 +481,6 @@
                 }
                 
                 myLinks.deleteConfirm = function(id){
-                    debugger;
                     this.oListItem = myLinks.oList.getItemById(id);
                     oListItem.deleteObject();
                     this.errorMsg = "Delete list item Request failed. ";
@@ -533,4 +512,84 @@
             scrollLeft: "-=100px"
         }, "fast");
     });
+
+    /*===  variables ===*/
+    var apps = {
+        clientContext: null,
+        oList: null,
+        editMode: false,
+        responseMsg: '',
+        items: []
+    };
+    /*===  variables ===*/	
+
+    /*===  helper functions ===*/
+    apps.onQueryFailed = function(sender, args) {
+        debugger;
+        var customMsg = this.errorMsg? this.errorMsg : '';
+        alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+    }
+    /*===  helper functions ===*/
+
+    $( document ).ready(function() {
+        SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+                apps.getItems();
+            });
+    });
+
+    apps.getItems = function(){
+        apps.clientContext = new SP.ClientContext();
+        apps.oList = apps.clientContext.get_web().get_lists().getByTitle('My Apps');
+        var camlQuery = new SP.CamlQuery();
+        //IsActive = true, Order by 'Order asc'.
+        var q = "<View><Query><Where><Eq><FieldRef Name='Author' LookupId='TRUE' /><Value Type='Integer'><UserID /></Value></Eq></Where><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+        camlQuery.set_viewXml(q);
+        apps.collListItem = apps.oList.getItems(camlQuery);
+        apps.clientContext.load(apps.collListItem);
+        this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+        apps.clientContext.executeQueryAsync(Function.createDelegate(this, apps.onGetItemsQuerySucceeded), Function.createDelegate(this, apps.onQueryFailed));  
+    }
+
+    apps.onGetItemsQuerySucceeded = function(sender, args) {
+        apps.items = [];
+        var listItemEnumerator = apps.collListItem.getEnumerator();	
+        while (listItemEnumerator.moveNext()) {
+            var oListItem = listItemEnumerator.get_current();
+            var x = oListItem.get_item('AppId');
+            var y = x.get_lookupValue();
+            var item = {
+                    id: oListItem.get_item('ID'),
+                    title: oListItem.get_item('Title'),
+                    order: oListItem.get_item('Order0'),
+                    appId: oListItem.get_item('AppId'),
+                    url: oListItem.get_item('AppId_x003a_URL'),
+                    icon: oListItem.get_item('AppId_x003a_Icon'),         
+            };
+            item.title = item.appId ? item.appId.$5q_1 : "";
+            item.url = item.url ? item.url.$5q_1 : "";
+            item.icon = item.icon ? item.icon.$5q_1 : "";
+            apps.items.push(item);
+        }
+
+        //render logic here
+        var html = '';
+        if(apps.items){
+            for(var i = 0; i < apps.items.length; i++){
+                var item = apps.items[i];
+                html += '<li class="internal nav-item">'+
+                        '	<a class="nav-link" href="'+ item.url +'" target="_blank"><img src="'+ item.icon +'" class="img-fluid" style="height:34px;" alt=""><br><small>'+ item.title +'</small></a>'+
+                        '</li>';
+            }
+            if(html){
+                $('#my-apps-ul').empty();
+                $('#my-apps-ul').append(html);
+            }
+            else{
+                $('.my-apps-sec div.aps-crsl').css({"display": "none"});
+                $('.my-apps-sec .apps-not-found').css({"display": "block"});
+            }
+        }
+    }
+
+
 </script>
