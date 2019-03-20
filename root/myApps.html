@@ -1,6 +1,12 @@
+<style>
+    #all-draggable .unsortable a:first-child{
+        border: 1px solid #80808026;
+    }
+</style>
+
 <div class="my-apps-sec">
         <h5 class="font-weight-bold text-dark edwards-brdr mb-4">My Apps</h5>
-        <a href="#"  class="text-primary position-absolute tr-0 mr-3 mt-2"><small>Edit</small></a>
+        <a href="#" id="add-apps" class="text-primary position-absolute tr-0 mr-3 mt-2"><small>Edit</small></a>
 
         <p class="apps-not-found" style="padding: 25px 0 30px 0; color: gray; display: none;">You have not selected any apps yet!</p>
 
@@ -23,7 +29,6 @@
 
     <!-- end my apps  -->
 
-    
 
     <div class="my-shrtcts-sec position-relative">
             <h5 class="font-weight-bold text-dark edwards-brdr mb-4">My Shortcuts</h5>
@@ -67,188 +72,126 @@
             </div>
         </div>
 
-        <div class="modal fade edwards-modal-popup" id="my-links-modal" role="dialog" aria-hidden="true" style="display: none;"> 
-                <div class="modal-dialog"> 
-                   <div class="modal-content"> 
-                      <div class="modal-header"> 
-                         <ul class="nav nav-tabs"> 
-                            <li>
-                               <a href="#popuptab1" data-toggle="tab">Customize My Apps</a></li> 
-                            <li>
-                               <a href="#myLinks-popuptab2" data-toggle="tab" class="active show">Customize My Links</a></li> 
-                         </ul> 
-                         <button class="close" type="button" data-dismiss="modal">×</button> </div> 
-                      <div class="modal-body"> 
-                         <div class="tab-content"> 
-                            <div class="tab-pane fade in popuptab1" id="popuptab1"> 
-                               <p>Drag and drop apps to be shown here. You can add upto 12 apps</p> 
-                               <ul class="clearfix edwards-drag-section"> 
-                                  <li>
-                                     <a class="drag">skype</a></li> 
-                                  <li>
-                                     <a class="drag">Outlook</a></li> 
-                                  <li>
-                                     <a class="drag">Excel</a></li> 
-                                  <li>
-                                     <a class="drag">Delve</a></li> 
-                                  <li>
-                                     <a class="drag">Locations</a></li> 
-                                  <li>
-                                     <a class="drag">Connect</a></li> 
-                                  <li>
-                                     <a>7</a></li> 
-                                  <li>
-                                     <a>8</a></li> 
-                                  <li>
-                                     <a>9</a></li> 
-                                  <li>
-                                     <a>10</a></li> 
-                                  <li>
-                                     <a>11</a></li> 
-                                  <li>
-                                     <a>12</a></li> 
-                               </ul> 
-                               <input type="text" placeholder="Search App"/> 
-                               <div class="edwards-popup-sub-tabs"> 
-                                  <ul class="nav nav-pills"> 
-                                     <li>
-                                        <a class="active" href="#subtab1" data-toggle="pill">Connect</a></li> 
-                                     <li>
-                                        <a href="#subtab2" data-toggle="pill">Communicate</a></li> 
-                                     <li>
-                                        <a href="#subtab3" data-toggle="pill">Applications</a></li> 
-                                     <li>
-                                        <a href="#subtab4" data-toggle="pill">Digital Workspace</a></li> 
-                                     <li>
-                                        <a href="#subtab5" data-toggle="pill">Project Management</a></li> 
-                                  </ul> 
-                                  <div class="tab-content"> 
-                                     <div class="tab-pane fade in active" id="subtab1"> 
-                                        <ul class="clearfix"> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                           <li>
-                                              <a></a>App Name</li> 
-                                        </ul> 
-                                     </div> 
-                                     <div class="tab-pane fade" id="subtab2"> 
-                                        <ul class="clearfix"> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                           <li>
-                                              <a></a>App Name2</li> 
-                                        </ul> 
-                                     </div> 
-                                     <div class="tab-pane fade" id="subtab3"> 
-                                        <h3>Menu 2</h3> 
-                                        <p>Some content in menu 2.</p> 
-                                     </div> 
-                                     <div class="tab-pane fade" id="subtab4"> 
-                                        <h3>Menu 3</h3> 
-                                        <p>Some content in menu 2.</p> 
-                                     </div> 
-                                     <div class="tab-pane fade" id="subtab5"> 
-                                        <h3>Menu 4</h3> 
-                                        <p>Some content in menu 2.</p> 
-                                     </div> 
-                                  </div> 
-                               </div> 
-                            </div> 
-                            <div class="tab-pane fade active show" id="myLinks-popuptab2"> 
-                               <p>Drag and drop apps to be shown here. You can add upto 12 apps</p> 
-                               <div class="row popuptab2"> 
-                                  <div class="col"> 
-                                     <h4>Link 1</h4> 
-                                     <input type="text" placeholder="Title"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                                  <div class="col"> 
-                                     <h4>Link 2</h4> 
-                                     <input type="text" placeholder="Title"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                               </div> 
-                               <div class="row popuptab2"> 
-                                  <div class="col"> 
-                                     <h4>Link 3</h4> 
-                                     <input type="text" placeholder="Title"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                                  <div class="col"> 
-                                     <h4>Link 4</h4> 
-                                     <input type="text" placeholder="Title"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                               </div> 
-                               <div class="row popuptab2"> 
-                                  <div class="col"> 
-                                     <h4>Link 5</h4> 
-                                     <input type="text" placeholder="Title"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                                  <div class="col"> 
-                                     <h4>Link 6</h4> 
-                                     <input type="text" placeholder="My Benefits"/> 
-                                     <input type="text" placeholder="URL"/> 
-                                  </div> 
-                               </div> 
-                            </div> 
-                         </div> 
-                      </div> 
-                      <div class="modal-footer"> 
-                         <button class="btn btn-cancel" type="button" data-dismiss="modal">Cancel</button> 
-                         <button class="btn btn-save" id="myLinks-save-btn" type="button">Save</button> </div> 
-                   </div> 
-                </div> 
-             </div> 
+                <div class="modal fade edwards-modal-popup" id="my-links-modal" role="dialog" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <ul class="nav nav-tabs">
+                                        <li><a data-toggle="tab" href="#myApps-popuptab1" class="active">Customize My Apps</a></li>
+                                        <li><a data-toggle="tab" href="#myLinks-popuptab2">Customize My Links</a></li>
+                                    </ul>
+                                    <button type="button" class="close" data-dismiss="modal">×</button>
+                                </div>
+                                <div class="modal-body p-3 p-sm-4">
+                                    <div class="tab-content">
+                                        <div id="myApps-popuptab1" class="tab-pane fade in active popuptab1">
+                                            <p class="text-black-50 mb-4 text-center">Drag and drop apps to be shown here. You can add upto 12 apps</p>
+                                            <ul class="clearfix edwards-drag-section row p-0" id="my-draggable">
+                                                <!-- <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/skype-ico.png" alt=""><br>Skype</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/outlook-ico.png" alt=""><br>Outlook</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/excel-ico-2.png" alt=""><br>Excel</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/delve-ico.png" alt=""><br>Delve</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/global-icon.png" alt=""><br>Locations</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/people-icon.png" alt=""><br>Connect</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>7</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>8</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>9</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>10</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>11</span></a></li>
+                                                <li class="col-sm-2 col-6"><a href=""><span>12</span></a></li> -->
+                                            </ul>
+                                            <div class="srch-area w-100 border border-dark-50 mx-auto mb-3" style="max-width:400px;">
+                                              <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                                              <div class="input-group input-group-sm">
+                                                <div class="input-group-prepend">
+                                                  <div class="input-group-text p-0"><button type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-search"></i></button></div>
+                                                </div>
+                                                <input type="text" class="form-control" id="popupsrch" placeholder="Search App">
+                                              </div>
+                                            </div>
+                                            <div class="edwards-popup-sub-tabs">
+                                                <ul class="nav nav-pills justify-content-center mb-4 nav-fill">
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div id="subtab1" class="tab-pane fade in active">
+                                                        <ul class="clearfix row flex-sm-row flex-column p-0 apps-lst edwards-drag-section" id="all-draggable">
+                                                            
+                                                        </ul>
+                                                    </div>
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="myLinks-popuptab2" class="tab-pane fade">
+                                            <p class="mb-4 text-black-50 text-center">Drag and drop apps to be shown here. You can add upto 12 apps</p>
+                                            <div class="row">
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk1">Link 1</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk1-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk1-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk2">Link 2</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk2-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk2-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk3">Link 3</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk3-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk3-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk4">Link 4</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk4-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk4-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk5">Link 5</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk5-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk5-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-4">
+                                                    <div class="bg-light p-3">
+                                                        <div class="form-group">
+                                                        <label for="lnk6">Link 6</label>
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk6-input1" placeholder="">
+                                                        <input type="text" class="form-control rounded-0 mb-2 form-control-sm" id="lnk6-input2" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary rounded-0 px-4" data-dismiss="modal">Cancel</button>
+                                    <button type="button" id="myLinks-save-btn" class="btn btn-danger rounded-0 px-4">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
              
@@ -274,7 +217,7 @@
                  $("#edit-myLinks-btn").click(function() {
                     $('#my-links-modal').modal('show');
                     $('.nav-tabs a[href="#myLinks-popuptab2"]').tab('show');
-                    $('#myLinks-popuptab2 div.col').each(function(i, obj) {
+                    $('#myLinks-popuptab2 div.col-sm-6').each(function(i, obj) {
                         $(this).find('input[type="text"]:first').val('');
                         $(this).find('input[type="text"]:last').val('');
                     });
@@ -285,7 +228,7 @@
                  /*=== when modal save btn is clicked ===*/
                  $("#myLinks-save-btn").click(function() {
                     var tempUpdateItems = [], tempCreateItems = [], errMsg = '';		
-                    $('#myLinks-popuptab2 div.col').each(function(i, obj) {
+                    $('#myLinks-popuptab2 div.col-sm-6').each(function(i, obj) {
                             var title = $(this).find('input[type="text"]:first').val();
                             var url = $(this).find('input[type="text"]:last').val();
                             if(myLinks.items[i]){
@@ -348,7 +291,7 @@
                 
                 
                 
-                myLinks.retrieveListItems= function() {
+                myLinks.retrieveListItems = function() {
                     myLinks.clientContext = new SP.ClientContext();
                     myLinks.oList = myLinks.clientContext.get_web().get_lists().getByTitle('Important Links');
                     var camlQuery = new SP.CamlQuery();
@@ -394,16 +337,20 @@
                             col2 += linkHtml;
                         }
                     }
-                    if(col1)
+                    if(col1){
+                        $('#qcklnks .col-sm-6:first-child ul').empty();
                         $('#qcklnks .col-sm-6:first-child ul').append(col1); 
-                    if(col2)
+                    }
+                    if(col2){
+                        $('#qcklnks .col-sm-6:last-child ul').empty();
                         $('#qcklnks .col-sm-6:last-child ul').append(col2); 
+                    }
                     
                 }
 
                 myLinks.loadFormData = function(){
                     if(myLinks.items){
-                        $('#myLinks-popuptab2 div.col').each(function(i, obj) {
+                        $('#myLinks-popuptab2 div.col-sm-6').each(function(i, obj) {
                             if(myLinks.items[i]){
                                 $(this).find('input[type="text"]:first').val(myLinks.items[i].title);
                                 $(this).find('input[type="text"]:last').val(myLinks.items[i].url);
@@ -476,6 +423,7 @@
                 myLinks.onUpdateQuerySucceeded = function(sender, args) {
                     alert('Links updated successfully!');
                     $('#my-links-modal').modal('hide');
+                    myLinks.retrieveListItems();
                     //myLinks.retrieveListItems();
                     //myLinks.resetForm();
                 }
@@ -494,6 +442,9 @@
                 }
                 
             </script>
+
+
+
 
 
 <script type="text/javascript">
@@ -519,7 +470,8 @@
         oList: null,
         editMode: false,
         responseMsg: '',
-        items: []
+        items: [], //user selected apps (my apps)
+        allItems: [] //all apps, that the user can select from.
     };
     /*===  variables ===*/	
 
@@ -555,8 +507,6 @@
         var listItemEnumerator = apps.collListItem.getEnumerator();	
         while (listItemEnumerator.moveNext()) {
             var oListItem = listItemEnumerator.get_current();
-            var x = oListItem.get_item('AppId');
-            var y = x.get_lookupValue();
             var item = {
                     id: oListItem.get_item('ID'),
                     title: oListItem.get_item('Title'),
@@ -591,5 +541,108 @@
         }
     }
 
+    $('#add-apps').click(function(e){
+        e.preventDefault();
+
+        apps.clientContext = new SP.ClientContext();
+        apps.oList = apps.clientContext.get_web().get_lists().getByTitle('Apps');
+        var camlQuery = new SP.CamlQuery();
+        var q = "<View><Query><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "" + "</Query>" + "</View>";
+        camlQuery.set_viewXml(q);
+        apps.collListItem = apps.oList.getItems(camlQuery);
+        apps.clientContext.load(apps.collListItem);
+        this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+        apps.clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
+            apps.onGetAppsQuerySucceeded(sender, args, apps.collListItem);
+        }), Function.createDelegate(this, apps.onQueryFailed));  
+
+    });
+
+    apps.onGetAppsQuerySucceeded = function(sender, args, collListItem){
+        apps.allItems = [];
+        var listItemEnumerator = collListItem.getEnumerator();	
+        while (listItemEnumerator.moveNext()) {
+            var oListItem = listItemEnumerator.get_current();
+            var item = {
+                    id: oListItem.get_item('ID'),
+                    title: oListItem.get_item('Title'),
+                    url: oListItem.get_item('URL'),
+                    icon: oListItem.get_item('Icon'),
+                    order: null
+      
+            };
+            apps.allItems.push(item);
+        }
+
+        ///////////////////////////
+        $('#my-links-modal').modal('show');
+        $('.nav-tabs a[href="#myApps-popuptab1"]').tab('show');
+        if(apps.items){
+            var html = '';
+            //render my apps.
+            for(var i = 0; i < 12; i++){
+                var item = apps.items[i];
+                if(item)
+                    html += '<li class="col-sm-2 col-6">'+
+                            '	<a href="" class="drag">'+
+                            '		<span><img src="'+ item.icon +'" alt="">'+
+                            '		<br>'+ item.title +
+                            '		</span>'+
+                            '	</a>'+
+                            '</li>';
+            //     else
+            //         html += '<li class="col-sm-2 col-6 droppable"><a href=""><span>'+ (i+1) +'</span></a></li>';
+             }
+            if(html){
+                //render my apps
+                $('#my-draggable').empty(); 
+                $('#my-draggable').append(html);        
+                $("#my-draggable").sortable({
+                    update: function(event, ui){
+                        myAppsSortHandler(event, ui);
+                    }
+                });
+
+            }
+
+            //render all apps
+            if(apps.allItems){
+                var html = '';
+                for(var i = 0; i < apps.allItems.length; i++){
+                    var item = apps.allItems[i];
+                    //check if it is present in 'my apps'.
+                    var exists = $.grep(apps.items, function(i) {
+                        return i.appId.$1t_1 == item.id;
+                    });
+
+                    html += '<li class="col-sm-2 col-6 '+  (exists && exists.length ? 'unsortable': 'soortable')+'" data-appid="'+ item.id +'">'+
+                            '	<a href="" class="drag">'+
+                            '		<span><img src="'+ item.icon +'" alt="">'+
+                            '		<br>'+ item.title +
+                            '		</span>'+
+                            '	</a>'+
+                            '</li>';
+                }
+                if(html){
+                    $('#all-draggable').empty().append(html);
+                    $("#all-draggable").sortable({
+                        items: "li:not(.unsortable)",
+                        connectWith: '#my-draggable',
+                    });
+                    $("#all-draggable").disableSelection();
+                }
+            }
+        }
+
+
+        //////////////////////////
+
+    }
+
+    var myAppsSortHandler = function(event, ui){
+        var $test = $(".edwards-drag-section");
+        var listElements = $test.children();
+        debugger;
+    }
 
 </script>
