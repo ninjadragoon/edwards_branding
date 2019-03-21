@@ -87,18 +87,7 @@
                                         <div id="myApps-popuptab1" class="tab-pane fade in active popuptab1">
                                             <p class="text-black-50 mb-4 text-center">Drag and drop apps to be shown here. You can add upto 12 apps</p>
                                             <ul class="clearfix edwards-drag-section row p-0" id="my-draggable">
-                                                <!-- <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/skype-ico.png" alt=""><br>Skype</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/outlook-ico.png" alt=""><br>Outlook</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/excel-ico-2.png" alt=""><br>Excel</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/delve-ico.png" alt=""><br>Delve</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/global-icon.png" alt=""><br>Locations</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href="" class="drag"><span><img src="images/people-icon.png" alt=""><br>Connect</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>7</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>8</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>9</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>10</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>11</span></a></li>
-                                                <li class="col-sm-2 col-6"><a href=""><span>12</span></a></li> -->
+                                                
                                             </ul>
                                             <div class="srch-area w-100 border border-dark-50 mx-auto mb-3" style="max-width:400px;">
                                               <label class="sr-only" for="inlineFormInputGroup">Search</label>
@@ -124,7 +113,7 @@
                                             </div>
                                         </div>
                                         <div id="myLinks-popuptab2" class="tab-pane fade">
-                                            <p class="mb-4 text-black-50 text-center">Drag and drop apps to be shown here. You can add upto 12 apps</p>
+                                            <p class="mb-4 text-black-50 text-center"></p>
                                             <div class="row">
                                                 <div class="col-sm-6 mb-4">
                                                     <div class="bg-light p-3">
@@ -188,6 +177,8 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary rounded-0 px-4" data-dismiss="modal">Cancel</button>
                                     <button type="button" id="myLinks-save-btn" class="btn btn-danger rounded-0 px-4">Save</button>
+                                    <button type="button" id="myApps-save-btn" class="btn btn-warning rounded-0 px-4">Save Apps</button>
+
                                 </div>
                             </div>
                         </div>
@@ -583,7 +574,7 @@
             for(var i = 0; i < 12; i++){
                 var item = apps.items[i];
                 if(item)
-                    html += '<li class="col-sm-2 col-6">'+
+                    html += '<li class="col-sm-2 col-6" data-appid="'+ item.appId.$1t_1 +'" data-exists="true">'+
                             '	<a href="" class="drag">'+
                             '		<span><img src="'+ item.icon +'" alt="">'+
                             '		<br>'+ item.title +
@@ -615,7 +606,7 @@
                         return i.appId.$1t_1 == item.id;
                     });
 
-                    html += '<li class="col-sm-2 col-6 '+  (exists && exists.length ? 'unsortable': 'soortable')+'" data-appid="'+ item.id +'">'+
+                    html += '<li title="'+ (exists && exists.length ? 'You have already added this app!': '') +'" class="col-sm-2 col-6 '+  (exists && exists.length ? 'unsortable': 'soortable')+'" data-appid="'+ item.id +'">'+
                             '	<a href="" class="drag">'+
                             '		<span><img src="'+ item.icon +'" alt="">'+
                             '		<br>'+ item.title +
@@ -640,9 +631,47 @@
     }
 
     var myAppsSortHandler = function(event, ui){
-        var $test = $(".edwards-drag-section");
+        var $test = $("#my-draggable");
         var listElements = $test.children();
         debugger;
     }
+
+    $('#myApps-save-btn').click(function(){
+        var newApps = [], updatedApps = [];
+        var myAppsLi = $("#my-draggable li");
+        myAppsLi.each(function(idx, li) {
+            var appId = $(this).attr('data-appid'); 
+            var exists = $(this).attr('data-exists');
+            var order = idx + 1;
+            if(appId){
+                //first check newly added items.
+                if(!exists){
+                    var item = $.grep(apps.allItems, function(i) {
+                        return i.id == appId;
+                    });
+                    if(item && item.length){
+                        item[0].order = order;                   ///item should be a clone here.........
+                        newApps.push(item[0]);
+                    }
+                }
+                else{
+                    //check if existing item needs to be updated.
+                    var item = [];
+                    item = $.grep(apps.items, function(i) {
+                        return i.appId.$1t_1 == appId;
+                    });
+                    if(item.length){
+                        //check if item order has changed. for now, we only update existing item if order is changed.
+                        if(item[0].order != order){
+                            item[0].order = order;
+                            updatedApps.push(item[0]);
+                        }
+                    }
+                }
+            }
+        });
+
+        debugger;
+    });
 
 </script>
