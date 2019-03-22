@@ -326,10 +326,10 @@
                                         '		<small class="d-block pl-4">'+ link.title +'</small>'+
                                         '	</a>'+
                                         '</li>';
-                        if(i < 3){
+                        if(i < 3 && link){
                             col1 += linkHtml;
                         }
-                        else if(i < 6){
+                        else if(i < 6 && link){
                             col2 += linkHtml;
                         }
                     }
@@ -387,6 +387,7 @@
                 
                  myLinks.onCreateQuerySucceeded = function(sender, args) {
                     $('#my-links-modal').modal('hide');
+                    myLinks.retrieveListItems();
                     //alert('item(s) created successfully!');
                     //myLinks.resetForm();
                     //myLinks.retrieveListItems();
@@ -417,7 +418,6 @@
                 }
                 
                 myLinks.onUpdateQuerySucceeded = function(sender, args) {
-                    alert('Links updated successfully!');
                     $('#my-links-modal').modal('hide');
                     myLinks.retrieveListItems();
                     //myLinks.retrieveListItems();
@@ -432,7 +432,6 @@
                 }
                 
                 myLinks.onDelQuerySucceeded = function() {
-                    alert('Item deleted!');
                     myLinks.retrieveListItems();
                     myLinks.resetForm();
                 }
