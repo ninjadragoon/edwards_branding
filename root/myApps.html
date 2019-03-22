@@ -500,15 +500,13 @@
             var oListItem = listItemEnumerator.get_current();
             var item = {
                     id: oListItem.get_item('ID'),
-                    title: oListItem.get_item('Title'),
+                    title: oListItem.get_item('AppId').get_lookupValue(),
                     order: oListItem.get_item('Order0'),
-                    appId: oListItem.get_item('AppId'),
-                    url: oListItem.get_item('AppId_x003a_URL'),
-                    icon: oListItem.get_item('AppId_x003a_Icon'),         
+                    appId: oListItem.get_item('AppId').get_lookupId(),
+                    url: oListItem.get_item('AppId_x003a_URL').get_lookupValue(),
+                    icon: oListItem.get_item('AppId_x003a_Icon').get_lookupValue(),         
             };
-            item.title = item.appId ? item.appId.$5q_1 : "";
-            item.url = item.url ? item.url.$5q_1 : "";
-            item.icon = item.icon ? item.icon.$5q_1 : "";
+
             apps.items.push(item);
         }
 
@@ -574,16 +572,14 @@
             for(var i = 0; i < 12; i++){
                 var item = apps.items[i];
                 if(item)
-                    html += '<li class="col-sm-2 col-6" data-appid="'+ item.appId.$1t_1 +'" data-exists="true">'+
+                    html += '<li class="col-sm-2 col-6" data-appid="'+ item.appId +'" data-exists="true">'+
                             '	<a href="" class="drag">'+
                             '		<span><img src="'+ item.icon +'" alt="">'+
                             '		<br>'+ item.title +
                             '		</span>'+
                             '	</a>'+
                             '</li>';
-            //     else
-            //         html += '<li class="col-sm-2 col-6 droppable"><a href=""><span>'+ (i+1) +'</span></a></li>';
-             }
+            }
             if(html){
                 //render my apps
                 $('#my-draggable').empty(); 
@@ -603,7 +599,7 @@
                     var item = apps.allItems[i];
                     //check if it is present in 'my apps'.
                     var exists = $.grep(apps.items, function(i) {
-                        return i.appId.$1t_1 == item.id;
+                        return i.appId == item.id;
                     });
 
                     html += '<li title="'+ (exists && exists.length ? 'You have already added this app!': '') +'" class="col-sm-2 col-6 '+  (exists && exists.length ? 'unsortable': 'soortable')+'" data-appid="'+ item.id +'">'+
@@ -631,47 +627,56 @@
     }
 
     var myAppsSortHandler = function(event, ui){
-        var $test = $("#my-draggable");
-        var listElements = $test.children();
-        debugger;
+        //debugger;
+        //called whenever sorting order is changed.
     }
 
     $('#myApps-save-btn').click(function(){
         var newApps = [], updatedApps = [];
+
+        //deep copy.
+        var myApps = JSON.parse(JSON.stringify(apps.items));
+        var allApps = JSON.parse(JSON.stringify(apps.allItems));
+
+
         var myAppsLi = $("#my-draggable li");
         myAppsLi.each(function(idx, li) {
+
             var appId = $(this).attr('data-appid'); 
             var exists = $(this).attr('data-exists');
             var order = idx + 1;
+
             if(appId){
                 //first check newly added items.
                 if(!exists){
-                    var item = $.grep(apps.allItems, function(i) {
+                    var found = $.grep(allApps, function(i) {
                         return i.id == appId;
                     });
-                    if(item && item.length){
-                        item[0].order = order;                   ///item should be a clone here.........
-                        newApps.push(item[0]);
+                    if(found && found.length){
+                        var item = found[0];
+                        item.order = order;                  
+                        newApps.push(item);
                     }
                 }
                 else{
                     //check if existing item needs to be updated.
-                    var item = [];
-                    item = $.grep(apps.items, function(i) {
-                        return i.appId.$1t_1 == appId;
+                    var found = $.grep(myApps, function(i) {
+                        return i.appId == appId;
                     });
-                    if(item.length){
+                    if(found && found.length){
+                        var item = found[0];
                         //check if item order has changed. for now, we only update existing item if order is changed.
-                        if(item[0].order != order){
-                            item[0].order = order;
-                            updatedApps.push(item[0]);
+                        if(item.order != order){
+                            item.order = order;
+                            updatedApps.push(item);
                         }
                     }
                 }
             }
         });
 
-        debugger;
+        debugger;   
+
     });
 
 </script>
