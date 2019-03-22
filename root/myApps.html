@@ -2,6 +2,9 @@
     #all-draggable .unsortable a:first-child{
         border: 1px solid #80808026;
     }
+    #my-draggable{
+        min-height: 120px;
+    }
 </style>
 
 <div class="my-apps-sec">
@@ -177,7 +180,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary rounded-0 px-4" data-dismiss="modal">Cancel</button>
                                     <button type="button" id="myLinks-save-btn" class="btn btn-danger rounded-0 px-4">Save</button>
-                                    <button type="button" id="myApps-save-btn" class="btn btn-warning rounded-0 px-4">Save Apps</button>
+                                    <button type="button" id="myApps-save-btn" class="btn btn-danger rounded-0 px-4">Save</button>
 
                                 </div>
                             </div>
@@ -206,6 +209,8 @@
                  
                  /*=== open modal and select my-links tab ===*/
                  $("#edit-myLinks-btn").click(function() {
+                    $('#myApps-save-btn').hide();
+                    $('#myLinks-save-btn').show();
                     $('#my-links-modal').modal('show');
                     $('.nav-tabs a[href="#myLinks-popuptab2"]').tab('show');
                     $('#myLinks-popuptab2 div.col-sm-6').each(function(i, obj) {
@@ -520,6 +525,8 @@
                         '</li>';
             }
             if(html){
+                $('.my-apps-sec div.aps-crsl').css({"display": "block"});
+                $('.my-apps-sec .apps-not-found').css({"display": "none"});
                 $('#my-apps-ul').empty();
                 $('#my-apps-ul').append(html);
             }
@@ -532,7 +539,8 @@
 
     $('#add-apps').click(function(e){
         e.preventDefault();
-
+        $('#myApps-save-btn').show();
+        $('#myLinks-save-btn').hide();
         apps.clientContext = new SP.ClientContext();
         apps.oList = apps.clientContext.get_web().get_lists().getByTitle('Apps');
         var camlQuery = new SP.CamlQuery();
@@ -580,7 +588,7 @@
                             '	</a>'+
                             '</li>';
             }
-            if(html){
+            //if(html){
                 //render my apps
                 $('#my-draggable').empty(); 
                 $('#my-draggable').append(html);        
@@ -590,7 +598,7 @@
                     }
                 });
 
-            }
+            //}
 
             //render all apps
             if(apps.allItems){
@@ -677,6 +685,75 @@
 
         debugger;   
 
+        if(newApps.length || updatedApps.length){
+            $('#myApps-save-btn').attr('disabled','disabled');
+            apps.clientContext = new SP.ClientContext();
+            apps.oList = apps.clientContext.get_web().get_lists().getByTitle('My Apps');
+        }
+
+
+        if(newApps.length){          
+            for(var i = 0; i < newApps.length; i++){
+                
+                var item = newApps[i];
+                var itemCreateInfo = new SP.ListItemCreationInformation();
+                apps.oListItem = apps.oList.addItem(itemCreateInfo);
+                apps.oListItem.set_item('AppId', item.id);
+                apps.oListItem.set_item('Order0', item.order);
+                apps.oListItem.set_item('IsActive', "Yes");
+                apps.oListItem.update();
+                apps.clientContext.load(apps.oListItem);
+                this.errorMsg = "Create list item Request failed. ";
+            }
+            apps.clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
+
+                updateApps();
+
+            }), Function.createDelegate(this, apps.onQueryFailed));
+            
+        }
+        else{
+            //only update case applies.
+            updateApps();
+        }
+
+
+        function updateApps(){
+            if(updatedApps.length){
+                    for(var i = 0; i < updatedApps.length; i++){
+                        var item = updatedApps[i];
+                        apps.oListItem = apps.oList.getItemById(item.id);
+                        apps.oListItem.set_item('Order0', item.order);
+                        apps.oListItem.update();
+                    }
+                    apps.clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
+                        
+                        hideAppsModal();
+
+                    }), Function.createDelegate(this, apps.onQueryFailed));
+                }
+                else{
+                    hideAppsModal();
+                }
+        }
+
+        function hideAppsModal(){
+            $('#my-links-modal').modal('hide');
+            $('#myApps-save-btn').removeAttr('disabled');
+            apps.getItems();
+        }
+
+    });
+
+
+
+    $('.nav-tabs a[href="#myLinks-popuptab2"]').click(function(){
+        $('#myApps-save-btn').hide();
+        $('#myLinks-save-btn').show();
+    });
+    $('.nav-tabs a[href="#myApps-popuptab1"]').click(function(){
+        $('#myApps-save-btn').show();
+        $('#myLinks-save-btn').hide();
     });
 
 </script>
