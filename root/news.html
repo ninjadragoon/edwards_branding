@@ -16,42 +16,13 @@
                  </ul>
              </div>
          </div>
-         <div class="col-lg-5 mb-3 mb-lg-0" Id="news-section">
-             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
-                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
-                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
-                  </div>
-               <div class="media-body align-self-center text-dark">
-                 <p class="mb-2 font-weight-bold cheading">Edwards" First day of business in ireland</p>
-                 <p class="mb-0 cdesc">Short description of news article. 2 lines for details.</p>
-               </div>
-             </a>
-             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
-                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
-                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
-                  </div>
-               <div class="media-body align-self-center text-dark">
-                 <p class="mb-2 font-weight-bold cheading">New Removable Storage Media Policy</p>
-                 <p class="mb-0 cdesc">Short description of news article. 2 lines for details.</p>
-               </div>
-             </a>
-             <a href="#" class="nws-artcl media mb-4 text-muted text-decoration-none">
-                   <div class="img-hldr banner mr-3 text-center" style="background-image: url(images/img01.jpg);">
-                       <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">global</div>
-                  </div>
-               <div class="media-body align-self-center text-dark">
-                 <p class="mb-2 font-weight-bold cheading">July 27 Employee Meeting Now Online</p>
-                 <p class="mb-0 cdesc">pShort description of news article. 2 lines for details.p</p>
-               </div>
-             </a>
+         <div class="col-lg-5 mb-3 mb-lg-0" Id="top-stories">
+             
          </div>
-         <div class="col-lg-3 mb-3 mb-lg-0" Id="detail-sec">
+         <div class="col-lg-3 mb-3 mb-lg-0" Id="hot-topics">
              <ul class="list-group list-group-flush lst-with-brdr">
-               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Melissa Haffner joins TMTT Global health Economics and reimbursement</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
-               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Roy Zhu Hairong joins Edwards as Assoc. Mgr., Treasury</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
-               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Beth Rose Promoted to Sr Dr., Stregy & Business Development, CC & Vascular</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
-               <li class="list-group-item"><a href="#" class="font-weight-bold"><span class="dheading">Sally Tran Joins TmTT/AT Finance as Financial Analyst</span><br/><small class="font-weight-bold pr-1">Author Name</small><small class="text-black-50 date"> April 14</small></a></li>
-             </ul>
+               
+            </ul>
          </div>
         </div>
  </div>
@@ -62,148 +33,182 @@
 
 /*===  variables ===*/
 var news = {
-clientContext: null,
-oList: null,
-editMode: false,
-responseMsg: '',
-imgItems: [3],
-textItems: [4],
-categories: ['top stories', 'hot topics']
+    clientContext: null,
+    oList: null,
+    editMode: false,
+    responseMsg: '',
+    imgItems: [3],
+    textItems: [4],
+    type: 'Regional',
+    categories: ['Regional Top Stories', 'Hot Topics'],
+    topStories: [],
+    hotTopics: []
 };
 /*===  variables ===*/	
 
 /*===  helper functions ===*/
 news.onQueryFailed = function(sender, args) {
-debugger;
-var customMsg = this.errorMsg? this.errorMsg : '';
-alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
+    var customMsg = this.errorMsg? this.errorMsg : '';
+    alert(customMsg + args.get_message() + '\n' + args.get_stackTrace());
 }
 
-/*===  visible = string('show'/'hide'), itemType = 'image'/'text', item = $(this) ===*/
-news.manageVisibility = function(visible, itemType, item){
-switch(itemType){
-case 'text':
- if(visible == 'show')
-     item.css("display", "block");
- else
-     item.css("display", "none");
- break;
- 
-case 'image':
- if(visible == 'show')
-     item.css("display", "flex");
- else
-     item.css("display", "none");
- break;
+news.truncateText = function(text, tLength){
+    if(!text)
+        return "";
+    else if(text.length > tLength)
+        return text.substring(0, tLength) + '...';
+    else
+        return text;
 }
-}
+
 /*===  helper functions ===*/
+
+
 $( document ).ready(function() {
-SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
- news.getItems();
+    SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function(){
+        news.getTopStories();
+        news.getHotTopics();
+    });
 });
-});
 
-news.getItems = function(){
-news.clientContext = new SP.ClientContext();
-news.oList = news.clientContext.get_web().get_lists().getByTitle('News');
-var camlQuery = new SP.CamlQuery();
-//where IsActive = 1 && (Category = 'top stories' || 'hot topics') order by Order0 asc
-var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "<Or>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[0] + "</Value></Eq>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[1] + "</Value></Eq>" + "</Or>"  + " </And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
-camlQuery.set_viewXml(q);
-news.collListItem = news.oList.getItems(camlQuery);
-news.clientContext.load(news.collListItem);
-this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
-news.clientContext.executeQueryAsync(Function.createDelegate(this, news.onGetItemsQuerySucceeded), Function.createDelegate(this, news.onQueryFailed));        
-}
+news.getTopStories = function(){
+    news.clientContext = new SP.ClientContext();
+    news.oList = news.clientContext.get_web().get_lists().getByTitle('News');
+    var camlQuery = new SP.CamlQuery();
+    //where IsActive = 1 && news type = regional &&  (Category = 'top stories') order by Order0 asc limit 3
+    var q = "<View><Query><Where><And>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "<Or>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[0] + "</Value></Eq>" + "<Eq><FieldRef Name='Category'/><Value Type='Choice'>" + news.categories[1] + "</Value></Eq>" + "</Or>"  + " </And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+    
+    var q = "<View><Query>" + 
+                "<Where>" +
+                    "<And>" + 
+                        "<Eq><FieldRef Name='Regional_x0020_News_x0020_Catego'/><Value Type='Choice'>" + news.categories[0] + "</Value></Eq>" +
+                        "<And>" + 
+                            "<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" +
+                            "<Eq>" + "<FieldRef Name='News_x0020_Type'/><Value Type='Choice'>" + news.type + "</Value></Eq>" +
+                        "</And>" +
+                    "</And>" +
+                "</Where>" + 
+                "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + 
+                "</Query><RowLimit>3</RowLimit>" +
+            "</Query></View>";
 
-news.onGetItemsQuerySucceeded = function(sender, args) {
-news.imgItems = [];
-//news.imgItems.length = 3;
-news.textItems = [];
-//news.textItems.length = 4;
-var listItemEnumerator = news.collListItem.getEnumerator();	
-while (listItemEnumerator.moveNext()) {
-var oListItem = listItemEnumerator.get_current();
-var item = {
- id: oListItem.get_item('ID'),
- title: oListItem.get_item('Title'),
- url: oListItem.get_item('Url'),
- description: oListItem.get_item('Description'),
- imageUrl: oListItem.get_item('ImageUrl'),
- order: oListItem.get_item('Order0'),
- category: oListItem.get_item('Category'),
- tag: oListItem.get_item('Tag'),
- articlePublishDate: oListItem.get_item('ArticlePublishDate')
- };
-if(item.imageUrl)
- news.imgItems.push(item);
-else
- news.textItems.push(item);
-}	
-
-news.populateImageNews(null);
-news.populateTextNews(null);
+    
+    camlQuery.set_viewXml(q);
+    news.collListItem = news.oList.getItems(camlQuery);
+    news.clientContext.load(news.collListItem);
+    this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+    news.clientContext.executeQueryAsync(Function.createDelegate(this, news.onTopStoriesSuccess), Function.createDelegate(this, news.onQueryFailed));        
 }
 
-news.populateImageNews = function(category){
-if(news.imgItems.length){
-$('#news-section .nws-artcl').each(function(i, obj) {	
- if(news.imgItems[i]){
-     if(!category || (category && news.imgItems[i].category.length && news.imgItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
-         
-         $(this).attr('src', news.imgItems[i].imageUrl.$1_1);
-         $(this).find('.badge').text(news.imgItems[i].tag);
-         $(this).find('.cheading').text(news.imgItems[i].title).attr('href', news.imgItems[i].url.$1_1).attr("target","_blank");
-         $(this).find('.cdesc').text(news.imgItems[i].description);
-         $(this).find('.img-hldr').css("background-image", "url("+news.imgItems[i].imageUrl.$1_1+")");  
-         //data available for this div so we show it. 
-         news.manageVisibility('show', 'image', $(this));
-     }
-     else{
-         //data not available for this div so we hide it. 
-         news.manageVisibility('hide', 'image', $(this));
-     }
- }
- else{
-     //data not available for this div so we hide it. 
-     news.manageVisibility('hide', 'image', $(this));
- }
-});
-}
+news.onTopStoriesSuccess = function(sender, args) {
+    news.topStories = [];
+    var listItemEnumerator = news.collListItem.getEnumerator();	
+    while (listItemEnumerator.moveNext()) {
+        var oListItem = listItemEnumerator.get_current();
+        var item = {
+            id: oListItem.get_item('ID'),
+            title: oListItem.get_item('Title'),
+            url: oListItem.get_item('Url').get_url(),
+            description: news.truncateText(oListItem.get_item('Description'), 80),
+            imageUrl: oListItem.get_item('ImageUrl')? oListItem.get_item('ImageUrl').get_url() : "",
+            order: oListItem.get_item('Order0'),
+            tag: oListItem.get_item('Tag'),
+            articlePublishDate: oListItem.get_item('ArticlePublishDate')
+        };
+
+        news.topStories.push(item);
+    }	
+
+    news.populateTopStories();
 }
 
-news.populateTextNews = function(category){
-if(news.textItems.length){
-$('#detail-sec').find('.list-group-item').each(function(i, obj) {
- if(news.textItems[i]){
-     if(!category || (category && news.textItems[i].category && news.textItems[i].category.toString().toLowerCase().indexOf(category) > -1)){
-         $(this).find('.dheading').text(news.textItems[i].title);
-         $(this).find("a").attr('href', news.textItems[i].url.$1_1).attr("target","_blank");
-         
-         $(this).find('.date').text(news.textItems[i].articlePublishDate.toString().length > 10 ? news.textItems[i].articlePublishDate.toString().slice(4, 10) : news.textItems[i].articlePublishDate.toString());
-         if(!(news.textItems[i+1])){
-             $(this).css('border', 'none');
-         }
-         news.manageVisibility('show', 'text', $(this));
-     }
-     else
-         news.manageVisibility('hide', 'text', $(this));
- }
- else{
-     //$(this).css('border', 'none');
-     news.manageVisibility('hide', 'text', $(this));
- }
-});
-}
+
+news.populateTopStories = function(){
+    var html = '';
+    for(var i = 0; i < news.topStories.length; i++){
+        var item = news.topStories[i];
+        html += '<a href="'+ item.url +'" target="_blank" class="nws-artcl media mb-4 text-muted text-decoration-none">'+
+                '   <div class="img-hldr banner mr-3 text-center" style="background-image: url('+ item.imageUrl +');">'+
+                '	   <div class="badge badge-danger x-small text-uppercase bg-primary ls-1 rounded-0 p-1 position-absolute tl-0">'+ item.tag +'</div>'+
+                '  </div>'+
+                '   <div class="media-body align-self-center text-dark">'+
+                '	 <p class="mb-2 font-weight-bold cheading">'+ item.title +'</p>'+
+                '	 <p class="mb-0 cdesc">'+ item.description +'</p>'+
+                '   </div>'+
+                '</a>';
+	
+    }
+    if(html){
+        $('#top-stories').append(html);
+    }
 }
 
-news.filter = function(index){
-debugger;		
-if(news.categories[index]){
-var category = news.categories[index];
-news.populateImageNews(category);
-news.populateTextNews(category);
+news.getHotTopics = function(){
+    var clientContext = new SP.ClientContext();
+    var oList = clientContext.get_web().get_lists().getByTitle('News');
+    var camlQuery = new SP.CamlQuery();
+    //where IsActive = 1 && news type = regional &&  (Category = 'hot topics') order by Order0 asc limit 3    
+    var q = "<View><Query>" + 
+                "<Where>" +
+                    "<And>" + 
+                        "<Eq><FieldRef Name='Regional_x0020_News_x0020_Catego'/><Value Type='Choice'>" + news.categories[1] + "</Value></Eq>" +
+                        "<And>" + 
+                            "<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" +
+                            "<Eq>" + "<FieldRef Name='News_x0020_Type'/><Value Type='Choice'>" + news.type + "</Value></Eq>" +
+                        "</And>" +
+                    "</And>" +
+                "</Where>" + 
+                "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + 
+                "</Query><RowLimit>4</RowLimit>" +
+            "</Query></View>";
+
+    
+    camlQuery.set_viewXml(q);
+    var collListItem = oList.getItems(camlQuery);
+    clientContext.load(collListItem);
+    this.errorMsg = "Get list items request failed! "; //this is available in success/error functions called below;
+    
+    clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
+        news.onHotTopicsSuccess(sender, args, collListItem);
+    }), Function.createDelegate(this, news.onQueryFailed));        
 }
+
+news.onHotTopicsSuccess = function(sender, args, collListItem){
+    news.hotTopics = [];
+    var listItemEnumerator = collListItem.getEnumerator();	
+    while (listItemEnumerator.moveNext()) {
+        var oListItem = listItemEnumerator.get_current();
+        var item = {
+            id: oListItem.get_item('ID'),
+            title: oListItem.get_item('Title'),
+            url: oListItem.get_item('Url').get_url(),
+            description: oListItem.get_item('Description'),
+            imageUrl: oListItem.get_item('ImageUrl')? oListItem.get_item('ImageUrl').get_url() : "",
+            order: oListItem.get_item('Order0'),
+            tag: oListItem.get_item('Tag'),
+            articlePublishDate: oListItem.get_item('ArticlePublishDate')
+        };
+        news.hotTopics.push(item);
+    }	
+    news.populateHotTopics();
 }
+
+news.populateHotTopics = function(){
+    debugger;
+    var html = '';
+    for(var i = 0; i < news.hotTopics.length; i++){
+        var item = news.hotTopics[i];
+        html += '<li class="list-group-item">'+
+                '	<a href="'+ item.url +'" target="_blank" class="font-weight-bold">'+
+                '		<span class="dheading">'+ item.title +'</span><br/>'+
+                '		<small class="text-black-50 date">'+ (item.articlePublishDate.toString().length > 10 ? item.articlePublishDate.toString().slice(4, 10) : item.articlePublishDate.toString() ) +'</small>'+
+                '	</a>'+
+                '</li>';
+	
+    }
+    if(html){
+        $('#hot-topics ul').append(html);
+    }
+}
+
 </script>
