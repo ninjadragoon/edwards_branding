@@ -289,7 +289,7 @@ edwardsNews.getNews = function(type, cat, limit){
                             title: edwardsNews.truncateText(oListItem.get_item('Title'), 50),
                             carouselDescription: edwardsNews.truncateText(oListItem.get_item('Description'), 70),
                             taxKeyword: oListItem.get_item('Tag'),
-                            carouselImage: oListItem.get_item('ImageUrl'),
+                            carouselImage: oListItem.get_item('ImageUrl') ? oListItem.get_item('ImageUrl').get_url(): '',
                             carouselOrder: oListItem.get_item('Order0'),
                             pageUrl: oListItem.get_item('Url')
                     };
@@ -364,7 +364,7 @@ edwardsNews.renderGlobalTopStories = function(type){
         var item = items[i];
         var card = '<div class="card">'+
                     '	<figure class="figure mnu-fgr w-100 m-0">'+
-                    '	  <a href="'+ (item.pageUrl? item.pageUrl.$1_1 : '#') +'" target="_blank" class=" banner d-block text-center" style="background-image: url(' + (item.carouselImage ? item.carouselImage.$1_1 : "") + ');">'+
+                    '	  <a href="'+ (item.pageUrl? item.pageUrl.$1_1 : '#') +'" target="_blank" class=" banner d-block text-center" style="background-image: url(' + (item.carouselImage ? item.carouselImage : "/_catalogs/masterpage/OneEdwards/images/image-not-available.jpg") + ');">'+
                     '	  </a>'+
                     '	</figure>'+
                     '	<div class="card-body p-2">'+
@@ -440,7 +440,7 @@ edwardsNews.renderGlobalPatient = function(col1_id, col2_id, type, cat){
 
 edwardsNews.getItemHtml = function(item){
     return '<a href="'+ (item.pageUrl? item.pageUrl.$1_1 : '#') +'" target="_blank" class="nws-artcl media mb-4 text-muted text-decoration-none">'+
-                        '	<div class="img-hldr banner mr-3 text-center" style="background-image: url(' + (item.carouselImage ? item.carouselImage.$1_1 : "") + ');">'+
+                        '	<div class="img-hldr banner mr-3 text-center" style="background-image: url(' + (item.carouselImage ? item.carouselImage : "/_catalogs/masterpage/OneEdwards/images/image-not-available.jpg") + ');">'+
                         '	</div>'+
                         '  <div class="media-body align-self-center text-dark">'+
                         '	<p class="mb-2 font-weight-bold">'+ item.title +'</p>'+
