@@ -1,18 +1,16 @@
 <div class="edwards-updates-section row p-0 p-lg-5" >
     <div class="col p-lg-0">
         <div class="text-right mb-lg-3">
-         <a href="/Pages/NewsList.aspx" target="_blank" class=" text-primary d-none d-lg-inline "><small>View all</small></a>
+         <a href="/Pages/edwardsnews.aspx?type=regional" target="_blank" class=" text-primary d-none d-lg-inline "><small>View all</small></a>
         </div>
         <div class="row">
          <div class="col-lg-4 mb-3 mb-lg-0 px-0 px-lg-3">
              <div class="my-region h-100 p-3 py-4 p-lg-4 position-relative">
                  <h4 class="text-uppercase font-weight-bold ls-1 text-white edwards-brdr no-gry mb-3">my region</h4>
                  <a href="#" class="text-primary d-inline d-lg-none position-absolute tr-0 mr-3 mt-3"><small>View all</small></a>
-                 <a href="#" class="text-uppercase text-white ls-1 x-small d-none d-lg-inline"><span>Show me</span></a>
                  <ul class="list-group list-group-flush flsh-lst-itm rgn-list flex-lg-column flex-row">
-                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="active h5">Top Stories<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
-                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="h5" >Hot Topics<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
-                   <li class="list-group-item pr-3 pr-lg-0"><a href="#" class="h5">Events<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
+                   <li class="list-group-item pr-3 pr-lg-0"><a href="/Pages/edwardsnews.aspx?type=regional" target="_blank" class="h5">Top Stories<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
+                   <li class="list-group-item pr-3 pr-lg-0"><a href="/Pages/edwardsnews.aspx?type=regional" target="_blank" class="h5" >Hot Topics<i class="fas fa-arrow-right fa-xs d-none d-lg-inline"></i></a></li>
                  </ul>
              </div>
          </div>
@@ -194,7 +192,6 @@ news.onHotTopicsSuccess = function(sender, args, collListItem){
 }
 
 news.populateHotTopics = function(){
-    debugger;
     var html = '';
     for(var i = 0; i < news.hotTopics.length; i++){
         var item = news.hotTopics[i];
