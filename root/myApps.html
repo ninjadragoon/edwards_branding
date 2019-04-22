@@ -5,6 +5,28 @@
     #my-draggable{
         min-height: 120px;
     }
+    #remove-app{
+        background: #ff3c3c;
+        color: white;
+        font-size: 25px;
+        text-align: center;
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        padding-top: 10px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        transition: 0.1s;
+    }
+    .remove-app-hover{
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 35px;
+        padding-top: 20px;
+        box-shadow: 0px 5px 10px 3px #ccc;
+        background: #cc0000 !important;
+    }
 </style>
 
 <div class="my-apps-sec">
@@ -90,8 +112,11 @@
                                         <div id="myApps-popuptab1" class="tab-pane fade in active popuptab1">
                                             <p class="text-black-50 mb-4 text-center">Drag and drop apps to be shown here. You can add upto 12 apps</p>
                                             <ul class="clearfix edwards-drag-section row p-0" id="my-draggable">
-                                                
+                                                <!-- my apps -->
                                             </ul>
+
+                                            <a id="remove-app"><i class="fas fa-trash-alt"></i></a>
+
                                             <div class="srch-area w-100 border border-dark-50 mx-auto mb-3" style="max-width:400px;">
                                               <label class="sr-only" for="inlineFormInputGroup">Search</label>
                                               <div class="input-group input-group-sm">
@@ -107,7 +132,7 @@
                                                 <div class="tab-content">
                                                     <div id="subtab1" class="tab-pane fade in active">
                                                         <ul class="clearfix row flex-sm-row flex-column p-0 apps-lst edwards-drag-section" id="all-draggable">
-                                                            
+                                                            <!-- all apps -->
                                                         </ul>
                                                     </div>
                                                     
@@ -466,7 +491,8 @@
         editMode: false,
         responseMsg: '',
         items: [], //user selected apps (my apps)
-        allItems: [] //all apps, that the user can select from.
+        allItems: [], //all apps, that the user can select from.
+        updatedApps: [] //contains all the apps that need to be updated.
     };
     /*===  variables ===*/	
 
@@ -489,7 +515,7 @@
         apps.oList = apps.clientContext.get_web().get_lists().getByTitle('My Apps');
         var camlQuery = new SP.CamlQuery();
         //IsActive = true, Order by 'Order asc'.
-        var q = "<View><Query><Where><Eq><FieldRef Name='Author' LookupId='TRUE' /><Value Type='Integer'><UserID /></Value></Eq></Where><Where>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + " </Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
+        var q = "<View><Query><Where><And><Eq><FieldRef Name='Author' LookupId='TRUE' /><Value Type='Integer'><UserID /></Value></Eq>" +"<Eq>" + "<FieldRef Name='IsActive' />" + "<Value Type='Boolean'>1</Value>" + "</Eq>" + "</And></Where>" + "<OrderBy><FieldRef Name='Order0' Ascending='True' /></OrderBy>" + "</Query>" + "</View>";
         camlQuery.set_viewXml(q);
         apps.collListItem = apps.oList.getItems(camlQuery);
         apps.clientContext.load(apps.collListItem);
@@ -556,6 +582,7 @@
 
     apps.onGetAppsQuerySucceeded = function(sender, args, collListItem){
         apps.allItems = [];
+        apps.updatedApps = [];
         var listItemEnumerator = collListItem.getEnumerator();	
         while (listItemEnumerator.moveNext()) {
             var oListItem = listItemEnumerator.get_current();
@@ -569,8 +596,6 @@
             };
             apps.allItems.push(item);
         }
-
-        ///////////////////////////
         $('#my-links-modal').modal('show');
         $('.nav-tabs a[href="#myApps-popuptab1"]').tab('show');
         if(apps.items){
@@ -587,7 +612,6 @@
                             '	</a>'+
                             '</li>';
             }
-            //if(html){
                 //render my apps
                 $('#my-draggable').empty(); 
                 $('#my-draggable').append(html);        
@@ -596,9 +620,6 @@
                         myAppsSortHandler(event, ui);
                     }
                 });
-
-            //}
-
             //render all apps
             if(apps.allItems){
                 var html = '';
@@ -628,18 +649,48 @@
             }
         }
 
-
-        //////////////////////////
+        //initialize remove app button
+        $("#remove-app").droppable({
+            classes: {
+                "ui-droppable-hover": "remove-app-hover"
+            },
+            drop: function(event, ui) {
+                //ui.draggable.remove();
+                var $temp = ui.draggable.detach();
+                var $li = $temp[0].outerHTML;
+                var appId = $($li).attr('data-appid'); 
+                var exists = $($li).attr('data-exists');
+                var myAppId = null;
+                for(var i = 0; i < apps.items.length; i++){
+                    var item = apps.items[i];
+                    if(item.appId == appId){
+                        myAppId = item.id;
+                        break;
+                    }
+                }
+                if(!exists){
+                    //it means that the item is not created yet so 
+                    //we can ignore it. 
+                } 
+                else{
+                    apps.updatedApps.push({
+                        id: myAppId,
+                        appId: appId,
+                        isDeleted: true
+                    });
+                }
+            }
+        });
 
     }
 
     var myAppsSortHandler = function(event, ui){
-        //debugger;
         //called whenever sorting order is changed.
     }
 
     $('#myApps-save-btn').click(function(){
-        var newApps = [], updatedApps = [];
+        var newApps = [];
+        //var updatedApps = []; use apps.updatedApps instead.
 
         //deep copy.
         var myApps = JSON.parse(JSON.stringify(apps.items));
@@ -675,16 +726,15 @@
                         //check if item order has changed. for now, we only update existing item if order is changed.
                         if(item.order != order){
                             item.order = order;
-                            updatedApps.push(item);
+                            item.isDeleted = false;
+                            apps.updatedApps.push(item);
                         }
                     }
                 }
             }
         });
 
-        debugger;   
-
-        if(newApps.length || updatedApps.length){
+        if(newApps.length || apps.updatedApps.length){
             $('#myApps-save-btn').attr('disabled','disabled');
             apps.clientContext = new SP.ClientContext();
             apps.oList = apps.clientContext.get_web().get_lists().getByTitle('My Apps');
@@ -699,7 +749,7 @@
                 apps.oListItem = apps.oList.addItem(itemCreateInfo);
                 apps.oListItem.set_item('AppId', item.id);
                 apps.oListItem.set_item('Order0', item.order);
-                apps.oListItem.set_item('IsActive', "Yes");
+                apps.oListItem.set_item('IsActive', true);
                 apps.oListItem.update();
                 apps.clientContext.load(apps.oListItem);
                 this.errorMsg = "Create list item Request failed. ";
@@ -718,22 +768,28 @@
 
 
         function updateApps(){
-            if(updatedApps.length){
-                    for(var i = 0; i < updatedApps.length; i++){
-                        var item = updatedApps[i];
-                        apps.oListItem = apps.oList.getItemById(item.id);
+            if(apps.updatedApps.length){
+                for(var i = 0; i < apps.updatedApps.length; i++){
+                    var item = apps.updatedApps[i];
+                    apps.oListItem = apps.oList.getItemById(item.id);
+                    if(item.isDeleted){
+                        //apps.oListItem.set_item('IsActive', false);
+                        apps.oListItem.deleteObject()
+                    }                        
+                    else{
                         apps.oListItem.set_item('Order0', item.order);
                         apps.oListItem.update();
                     }
-                    apps.clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
-                        
-                        hideAppsModal();
-
-                    }), Function.createDelegate(this, apps.onQueryFailed));
                 }
-                else{
+                apps.clientContext.executeQueryAsync(Function.createDelegate(this, function(sender, args){
+                    
                     hideAppsModal();
-                }
+
+                }), Function.createDelegate(this, apps.onQueryFailed));
+            }
+            else{
+                hideAppsModal();
+            }
         }
 
         function hideAppsModal(){
