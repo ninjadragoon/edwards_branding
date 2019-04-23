@@ -1,6 +1,67 @@
 
-<div class="edwards-banner-section row py-lg-3"> 
-    <div class="col p-0 d-none d-lg-block"> 
+<style>
+.lds-ellipsis {
+  display: block;
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #c71732;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+</style>
+<div class="edwards-banner-section row py-lg-3" style="min-height: 389px" > 
+   <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+
+   <div class="col p-0 d-lg-block" style="display: none !important"> 
        <div class="row no-gutters"> 
           <div class="col pr-3"> 
              <a class="banner d-block" href="/teams/OEB/Pages/Apage1.aspx" > 
@@ -44,7 +105,7 @@
              </div> 
           </div> 
        </div> 
-    </div> 
+   </div> 
  </div> 
  <!-- Mobile banner --> 
     <div class="edwards-banner-section edwards-mbl-carousel row"> 
@@ -170,6 +231,9 @@
                  $('.edwards-banner-section').find('.banner:eq('+ i +')').find('.badge').text(item.taxKeyword);
              $('.edwards-banner-section .banner:eq('+ i +')').attr("href", item.pageUrl? item.pageUrl.$1_1 : "page url not found");	
          }
+
+         $('.lds-ellipsis').css('display', 'none');
+         $('.edwards-banner-section .d-lg-block').css('display', 'block');
          
          /*load data into carousel(it appears in mobile devices only)*/ 
          $('.edwards-banner-section .carousel-item').each(function(i, obj) {
